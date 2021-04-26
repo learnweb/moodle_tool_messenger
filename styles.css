@@ -1,0 +1,27 @@
+.tool_messenger .finished {
+    color: green;
+}
+
+.tool_messenger .aborted {
+    color: red;
+}
+
+.tool_messenger .inprogress {
+    color: orange;
+}
+
+.tool_messenger .optionbutton {
+    border-radius: 5px;
+    margin-right: 15px;
+}
+
+.tool_messenger .delbutton {
+    color: darkred;
+}
+
+.tool_messenger .table .td .col-md-3 {
+    max-width: 0;
+    flex: none;
+    width: 0;
+    height: 0;
+}
