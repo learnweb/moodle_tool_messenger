@@ -65,10 +65,18 @@ class message_persistent extends persistent{
                 'null' => NULL_ALLOWED,
                 'default' => null
             ),
-            'userids' => array (
+            'roleids' => array (
                 'type' => PARAM_TEXT,
-                'message' => new \lang_string('invaliduserids', 'tool_messenger')
-            )
+                'message' => new \lang_string('invalidroleids', 'tool_messenger')
+            ),
+            'knockoutdate' => array (
+                'type' => PARAM_INT,
+                'message' => new \lang_string('invalidknockoutdate', 'tool_messenger')
+            ),
+            'instant' => array (
+                'type' => PARAM_INT,
+                'message' => new \lang_string('invalidinstant', 'tool_messenger')
+            ),
         );
     }
 

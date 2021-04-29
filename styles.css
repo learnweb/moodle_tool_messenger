@@ -16,7 +16,7 @@
 }
 
 .tool_messenger .delbutton {
-    color: darkred;
+    background-color: darkred;
 }
 
 .tool_messenger .table .td .col-md-3 {

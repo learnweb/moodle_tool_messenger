@@ -14,17 +14,23 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-defined('MOODLE_INTERNAL') || die();
+namespace tool_messenger\task;
 
-$tasks = array(
-    array(
-        'classname' => '\tool_messenger\task\sendmails',
-        'blocking' => 0,
-        'minute' => '*',
-        'hour' => '*',
-        'day' => '*',
-        'month' => '*',
-        'dayofweek' => '*',
-        'disabled' => 0
-    )
-);
+use core\task\scheduled_task;
+
+class cleanup_jobs extends scheduled_task {
+
+    public function get_name() {
+        // TODO: Implement get_name() method.
+    }
+
+    public function execute() {
+        $time = time();
+        $period = get_config('tool_messenger', 'cleanupduration');
+        if (!$period) {
+            return;
+        }
+        $knockoutdate = $time + $period;
+        $DB->execute('DELETE FROM {tool_messenger_messagejobs} WHERE timemodified > ' . $time);
+    }
+}

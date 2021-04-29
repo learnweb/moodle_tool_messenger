@@ -40,6 +40,10 @@ $string['followup_help'] = 'Followup mails will only be sent to people that rece
 $string['locklimit'] = 'Sanity lock limit';
 $string['locklimit_help'] = 'Locks that are older than x minutes will be ignored. Leave at 0 if you are running a single thread setup';
 $string['sendinguserid'] = 'Id of sending user';
+$string['knockoutenable'] = 'Ignore users that havent logged in since some time';
+$string['cleanupduration'] = 'Save jobs for';
+$string['sending'] = 'Sending';
+$string['finished'] = 'Finished';
 
 $string['invalidmessage'] = "Supplied message is invalid";
 $string['invalidsubject'] = "Supplied subject is invalid";
@@ -49,3 +53,7 @@ $string['invalidpriority'] = 'Supplied invalid priority';
 $string['invalidfinished'] = 'Supplied invalid finished value';
 $string['invalidparentid'] = 'Supplied invalid parentid';
 $string['invaliduserids'] = 'Supplied invalid userids';
+$string['invalidroleids'] = 'Supplied invalid roleids';
+$string['invalidknockoutdate'] = 'Supplied invalid knockoutdate';
+$string['invalidinstant'] = 'Supplied invalid instant';
+

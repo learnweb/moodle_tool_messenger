@@ -43,6 +43,7 @@ class admin_form extends moodleform {
         $mform->setType($name, PARAM_INT);
         $mform->setDefault($name, get_config('tool_messenger', 'emailspercron'));
 
+        // TODO change to \core_user::get_noreply_user()
         $name = 'sendinguserid';
         $title = get_string('sendinguserid', 'tool_messenger');
         $mform->addElement('text', $name, $title);
@@ -55,6 +56,10 @@ class admin_form extends moodleform {
         $mform->setType($name, PARAM_INT);
         $mform->setDefault($name, get_config('tool_messenger', 'locklimit'));
         $mform->addHelpButton($name, $name, 'tool_messenger');
+
+        $name = 'cleanupduration';
+        $title = get_string('cleanupduration', 'tool_messenger');
+        $mform->addElement('duration', $name, $title);
 
         $mform->addElement('submit', 'saveconfigbutton', get_string('saveconfigbutton', 'tool_messenger'));
 
@@ -80,13 +85,18 @@ class admin_form extends moodleform {
 
         $name = 'message';
         $title = get_string('message', 'tool_messenger');
-        $mform->addElement('textarea', $name, $title, 'wrap="virtual" rows="10" cols="100"');
+        $mform->addElement('editor', $name, $title, array('maxfiles' => 0, 'noclean' => 1, 'trusttext' => 1));
         $mform->setType($name, PARAM_TEXT);
 
         $name = 'recipients';
         $title = get_string('sendto', 'tool_messenger');
         $roles = $this->get_roles();
         $mform->addElement('select', $name, $title, array_keys($roles), array_values($roles))->setMultiple(true);
+
+        $name = 'knockout_enable';
+        $title = get_string('knockoutenable', 'tool_messenger');
+        $mform->addElement('advcheckbox', $name, $title, ' ');
+        $mform->setDefault($name, 1);
 
         $name = 'knockout_date';
         $title = get_string ('knockoutdate', 'tool_messenger');
@@ -97,6 +107,7 @@ class admin_form extends moodleform {
             'optional'  => false
         ));
         $timestamp = strtotime('-1 years', time());
+        $mform->disabledIf($name, 'knockout_enable');
         $mform->setDefault($name, $timestamp);
 
         $name = 'priority';
@@ -106,7 +117,7 @@ class admin_form extends moodleform {
 
         $name = 'directsend';
         $title = get_string('directsend', 'tool_messenger');
-        $mform->addElement('checkbox', $name, $title);
+        $mform->addElement('advcheckbox', $name, $title, ' ');
         $mform->setType($name, PARAM_BOOL);
 
         // Add Button.
@@ -191,12 +202,9 @@ class admin_form extends moodleform {
             $mform->addElement('html', '<td class="cell c2"><div>' .
                 "Show message" .
                 '</div></td>');
-            $total = (substr_count($record->get("userids"), ",") + 1);
-            $progress = $record->get("progress");
-            $finished = $record->get("finished");
-            $status = $finished ? (($total == $progress) ? "finished" : "aborted") : "inprogress";
-            $mform->addElement('html', '<td class="cell c3"><div class="' . $status . '">' .
-                $progress . " / " . $total .
+            $status = $record->get("finished") ? 'finished' : 'sending';
+            $mform->addElement('html', '<td class="cell c3"><div>' .
+                get_string($status, 'tool_messenger') .
                 '</div></td>');
             $mform->addElement('html', '<td class="cell c4"><div>' .
                 $record->get("priority") .

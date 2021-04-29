@@ -16,6 +16,7 @@
 
 namespace tool_messenger;
 
+defined('MOODLE_INTERNAL') || die();
 
 class send_manager {
 
@@ -26,33 +27,27 @@ class send_manager {
             return 0;
         }
         $progress = $jobdata->get('progress');
-        $userids = $jobdata->get('userids');
         $message = $jobdata->get('message');
         $subject = $jobdata->get('subject');
+        $roleids = explode(",", $jobdata->get('roleids'));
+        $knockoutdate = $jobdata->get('knockoutdate');
         $userfrom = \core_user::get_user(get_config('tool_messenger', 'sendinguserid'));
-        $useridarray = explode(",", $userids);
-        if ($limit === -1) {
-            if (!empty($parentid = $jobdata->get('parentid'))) {
-                $parent = new message_persistent($parentid);
-                $limit = $parent->get('progress');
-            } else {
-                $limit = null;
-            }
-        } else {
-            if (!empty($parentid = $jobdata->get('parentid'))) {
-                $parent = new message_persistent($parentid);
-                $limit = min($parent->get('progress'), $limit);
-            }
+        $parentlimit = -1;
+        if (!empty($parentid = $jobdata->get('parentid'))) {
+            $parent = new message_persistent($parentid);
+            $parentlimit = $parent->get('progress');
         }
-        $userbatch = array_slice($useridarray, $progress, $limit);
+        $userbatch = $this->get_userids($roleids, $knockoutdate, $progress, $limit, $parentlimit);
         foreach ($userbatch as $userid) {
-            $userto = \core_user::get_user($userid);
+            $userto = \core_user::get_user($userid->userid);
             email_to_user($userto, $userfrom, $subject, $message);
         }
-        if (count($useridarray) <= $progress + count($userbatch)) {
+        if ($limit > count($userbatch)) {
             $jobdata->set('finished', 1);
         }
-        $jobdata->set('progress', $progress + count($userbatch));
+        if (isset($userid)) {
+            $jobdata->set('progress', $userid->userid);
+        }
         $jobdata->set('lock', 0); // Unlock.
         $jobdata->save();
         return count($userbatch);
@@ -65,19 +60,49 @@ class send_manager {
     public function run_to_cronlimit() {
         global $DB;
         $cronlimit = get_config('tool_messenger', 'emailspercron');
-        $jobids = $DB->get_fieldset_sql(
-            "SELECT id FROM {tool_messenger_messagejobs} WHERE finished != 1 ORDER BY priority DESC, timecreated ASC");
+        $instantjobids = $DB->get_fieldset_sql(
+            "SELECT id FROM {tool_messenger_messagejobs} WHERE finished != 1 AND instant = 1" .
+            " ORDER BY priority DESC, timecreated ASC");
+        $standardjobids = $DB->get_fieldset_sql(
+            "SELECT id FROM {tool_messenger_messagejobs} WHERE finished != 1 AND instant = 0" .
+                    " ORDER BY priority DESC, timecreated ASC");
 
-        if (count($jobids) == 0) {
+        if (count($standardjobids) + count($instantjobids) == 0) {
             return;
         }
 
         $amount = 0;
         $i = 0;
-        while ($amount < $cronlimit && $i < count($jobids)) {
-            $amount += $this->send_emails_for_job_with_limit($jobids[$i], $cronlimit);
+        foreach ($instantjobids as $instantjob) {
+            $amount += $this->send_emails_for_job_with_limit($instantjob, -1);
+        }
+        while ($amount < $cronlimit && $i < count($standardjobids)) {
+            $amount += $this->send_emails_for_job_with_limit($standardjobids[$i], $cronlimit);
             $i++;
         }
+    }
+
+    public function get_userids($roleids, $knockoutdate, $progress, $limit, $parentlimit): array {
+        global $DB;
+        if (count($roleids) == 0) {
+            return [];
+        }
+        $sql = "SELECT DISTINCT userid FROM {role_assignments} ra JOIN {user} u ON u.id = ra.userid";
+        $where = " WHERE (roleid = " . $roleids[0];
+        for ($i = 1; $i < count($roleids); $i++) {
+            $where .= "OR roleid = " . $roleids[$i];
+        }
+        $where .= ") AND u.lastaccess > $knockoutdate";
+        $where .= " AND userid > $progress";
+        if ($parentlimit >= 0) {
+            $where .= " AND userid <= $parentlimit";
+        }
+        if ($limit >= 0) {
+            $limit = " LIMIT $limit";
+        }
+
+        $userids = $DB->get_records_sql($sql . $where . $limit);
+        return $userids;
     }
 
 }

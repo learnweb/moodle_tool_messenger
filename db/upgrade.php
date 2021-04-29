@@ -82,5 +82,23 @@ function xmldb_tool_messenger_upgrade ($oldversion) {
         upgrade_plugin_savepoint(true, 2021060403, 'tool', 'messenger');
     }
 
+    if ($oldversion < 2021060410) {
+        $table = new xmldb_table('tool_messenger_messagejobs');
+        $field = new xmldb_field('userids', XMLDB_TYPE_TEXT, null, null, XMLDB_NOTNULL, null, null);
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_field($table, $field);
+        }
+        $table->add_field('roleids', XMLDB_TYPE_TEXT, null, null, XMLDB_NOTNULL, null);
+        $table->add_field('knockoutdate', XMLDB_TYPE_INTEGER, '10', null, null, null);
+        $table->add_field('instant', XMLDB_TYPE_INTEGER, '1', null, null, null);
+
+        foreach ($table->getFields() as $item) {
+            if (!$dbman->field_exists($table, $item)) {
+                $dbman->add_field($table, $item);
+            }
+        }
+
+    }
+
     return true;
 }

@@ -40,16 +40,12 @@ if (has_capability('moodle/site:config', context_system::instance())) {
     $mform = new tool_messenger\admin_form();
 
     if ($data = $mform->get_data()) {
+        var_dump($data);
         if (isset($data->saveconfigbutton)) {
-            if (isset($data->emailspercron)) {
-                set_config('emailspercron', $data->emailspercron, 'tool_messenger');
-            }
-            if (isset($data->sendinguserid)) {
-                set_config('sendinguserid', $data->sendinguserid, 'tool_messenger');
-            }
-            if (isset($data->locklimit)) {
-                set_config('locklimit', $data->locklimit, 'tool_messenger');
-            }
+            save_config_if_set('emailspercron');
+            save_config_if_set('sendinguserid');
+            save_config_if_set('lockdownlimit');
+            save_config_if_set('cleanupduration');
         }
         if (isset($data->abort)) {
             $persistent = new \tool_messenger\message_persistent(intval($data->abort));
@@ -59,50 +55,39 @@ if (has_capability('moodle/site:config', context_system::instance())) {
         if (isset($data->sendmessagebutton) and
             ((isset($data->recipients) and count($data->recipients) != 0) or isset($data->followup))) {
 
+            $record = new \stdClass();
+
+            $parentid = null;
             if (isset($data->followup)) {
-                $record = new \stdClass();
                 $record->parentid = $data->followup;
                 $parent = new \tool_messenger\message_persistent(intval($data->followup));
-                $record->userids = $parent->get("userids");
-                $record->message = $data->message;
-                $record->subject = $data->subject;
-                $record->progress = 0;
-                $record->priority = $data->priority;
-                $record->finished = 0;
-
-                $persistent = new \tool_messenger\message_persistent(0, $record);
-                $job = $persistent->create();
-            } else {
-                $sql = "SELECT DISTINCT userid FROM {role_assignments} ra JOIN {user} u ON u.id = ra.userid";
-                $where = " WHERE (roleid = " . $data->recipients[0];
-                for ($i = 1; $i < count($data->recipients); $i++) {
-                    $where .= "OR roleid = " . $data->recipients[$i];
-                }
-                $where .= ") AND u.lastaccess > " . $data->knockout_date;
-
-                $users = $DB->get_records_sql($sql . $where);
-                $record = new \stdClass();
-                $record->userids = implode(',', array_keys($users));
-                if (count($users) > 0) {
-                    $record->message = $data->message;
-                    $record->subject = $data->subject;
-                    $record->progress = 0;
-                    $record->priority = $data->priority;
-                    $record->finished = 0;
-
-                    $persistent = new \tool_messenger\message_persistent(0, $record);
-                    $job = $persistent->create();
-                }
+            }
+            $knockoutdate = 0;
+            if ($data->knockout_enable) {
+                $knockoutdate = $data->knockout_date;
             }
 
-            if (isset($data->directsend) and $data->directsend and $job) {
-                $task = new \tool_messenger\task\sendmailsinstant();
-                $task->set_custom_data(['jobid' => $job->get('id')]);
-                \core\task\manager::queue_adhoc_task($task);
-            }
+            $record->message = $data->message['text'];
+            $record->subject = $data->subject;
+            $record->progress = 0;
+            $record->priority = $data->priority;
+            $record->finished = 0;
+            $record->parentid = $parentid;
+            $record->roleids = implode(",", $data->recipients);
+            $record->knockoutdate = $knockoutdate;
+            $record->instant = $data->directsend;
+
+            $persistent = new \tool_messenger\message_persistent(0, $record);
+            $job = $persistent->create();
         }
     }
 
     $mform->display();
     echo $OUTPUT->footer();
+}
+
+function save_config_if_set($name) {
+    if (isset($data->$name)) {
+        set_config($name, $data->$name, 'tool_messenger');
+    }
 }
