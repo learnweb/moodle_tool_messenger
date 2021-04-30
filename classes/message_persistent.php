@@ -32,7 +32,7 @@ class message_persistent extends persistent{
     protected static function define_properties() {
         return array(
             'message' => array (
-                'type' => PARAM_TEXT,
+                'type' => PARAM_RAW,
                 'required' => true,
                 'message' => new \lang_string('invalidmessage', 'tool_messenger')
             ),

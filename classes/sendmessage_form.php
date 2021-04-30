@@ -59,8 +59,9 @@ class sendmessage_form extends moodleform {
 
         $name = 'message';
         $title = get_string('message', 'tool_messenger');
-        $mform->addElement('editor', $name, $title, array('maxfiles' => 0, 'noclean' => 1, 'trusttext' => 1));
-        $mform->setType($name, PARAM_TEXT);
+        $mform->addElement('editor', $name, $title,
+            array('enable_filemanagement' => false, 'maxfiles' => 0, 'noclean' => true, 'trusttext' => true));
+        $mform->setType($name, PARAM_RAW);
 
         $name = 'recipients';
         $title = get_string('sendto', 'tool_messenger');
@@ -199,7 +200,6 @@ class sendmessage_form extends moodleform {
             $mform->addElement('html', '</tr>');
         }
         global $PAGE;
-        $PAGE->requires->js_call_amd('tool_messenger/options', 'init');
         $mform->addElement('html', '</tbody>');
         $mform->addElement('html', '</table>');
     }

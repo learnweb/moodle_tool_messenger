@@ -75,6 +75,7 @@ if (has_capability('moodle/site:config', context_system::instance())) {
 
     $mform = new tool_messenger\sendmessage_form();
 
+    $PAGE->requires->js_call_amd('tool_messenger/options', 'init');
     $mform->display();
     echo $OUTPUT->footer();
 }
