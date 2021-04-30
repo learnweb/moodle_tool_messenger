@@ -30,7 +30,7 @@ class cleanup_jobs extends scheduled_task {
         if (!$period) {
             return;
         }
-        $knockoutdate = $time + $period;
-        $DB->execute('DELETE FROM {tool_messenger_messagejobs} WHERE timemodified > ' . $time);
+        $knockoutdate = $time - $period;
+        $DB->execute('DELETE FROM {tool_messenger_messagejobs} WHERE timemodified < ' . $time);
     }
 }

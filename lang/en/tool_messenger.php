@@ -45,6 +45,9 @@ $string['cleanupduration'] = 'Save jobs for';
 $string['sending'] = 'Sending';
 $string['finished'] = 'Finished';
 
+$string['sendmessage_section'] = "Send message";
+$string['general_config_header'] = "General Settings";
+
 $string['invalidmessage'] = "Supplied message is invalid";
 $string['invalidsubject'] = "Supplied subject is invalid";
 $string['invalidprogress'] = "Supplied progress is invalid";

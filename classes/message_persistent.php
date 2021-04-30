@@ -92,8 +92,8 @@ class message_persistent extends persistent{
         $lock = $persistent->get('lock');
         if ($lock != 0) {
             // Sanity check.
-            $sanitytimeperiod = '+' . get_config('tool_messenger', 'lock_limit') . ' minutes';
-            if (strtotime($sanitytimeperiod, $lock) >= time()) {
+            $sanitytimeperiod = get_config('tool_messenger', 'lock_limit');
+            if ($sanitytimeperiod and $lock + $sanitytimeperiod >= time()) {
                 return false;
             }
         }

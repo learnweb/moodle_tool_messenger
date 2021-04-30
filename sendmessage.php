@@ -24,12 +24,10 @@
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 require_once($CFG->dirroot . '/course/lib.php');
-$delid = optional_param('d', 0, PARAM_INT);
-$confirm = optional_param('c', 0, PARAM_INT);
 require_login();
 
 // Set the URL that should be used to return to this page.
-$PAGE->set_url('/tool/messenger/adminsettings');
+$PAGE->set_url('/tool/messenger/sendmessenger');
 $PAGE->set_context(context_system::instance());
 
 if (has_capability('moodle/site:config', context_system::instance())) {
@@ -37,16 +35,9 @@ if (has_capability('moodle/site:config', context_system::instance())) {
     echo $OUTPUT->header();
     echo $OUTPUT->heading(get_string('settings', 'tool_messenger'));
 
-    $mform = new tool_messenger\admin_form();
+    $mform = new tool_messenger\sendmessage_form();
 
     if ($data = $mform->get_data()) {
-        var_dump($data);
-        if (isset($data->saveconfigbutton)) {
-            save_config_if_set('emailspercron');
-            save_config_if_set('sendinguserid');
-            save_config_if_set('lockdownlimit');
-            save_config_if_set('cleanupduration');
-        }
         if (isset($data->abort)) {
             $persistent = new \tool_messenger\message_persistent(intval($data->abort));
             $persistent->set('finished', 1);
@@ -82,12 +73,8 @@ if (has_capability('moodle/site:config', context_system::instance())) {
         }
     }
 
+    $mform = new tool_messenger\sendmessage_form();
+
     $mform->display();
     echo $OUTPUT->footer();
-}
-
-function save_config_if_set($name) {
-    if (isset($data->$name)) {
-        set_config($name, $data->$name, 'tool_messenger');
-    }
 }

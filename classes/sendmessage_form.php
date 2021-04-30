@@ -31,37 +31,11 @@ defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . '/formslib.php');
 
-class admin_form extends moodleform {
+class sendmessage_form extends moodleform {
     protected function definition() {
         $mform = $this->_form;
 
         $mform->addElement('html', '<div id="adminsettings">');
-
-        $name = 'emailspercron';
-        $title = get_string('cronjobamount', 'tool_messenger');
-        $mform->addElement('text', $name, $title);
-        $mform->setType($name, PARAM_INT);
-        $mform->setDefault($name, get_config('tool_messenger', 'emailspercron'));
-
-        // TODO change to \core_user::get_noreply_user()
-        $name = 'sendinguserid';
-        $title = get_string('sendinguserid', 'tool_messenger');
-        $mform->addElement('text', $name, $title);
-        $mform->setType($name, PARAM_INT);
-        $mform->setDefault($name, get_config('tool_messenger', 'sendinguserid'));
-
-        $name = 'locklimit';
-        $title = get_string('locklimit', 'tool_messenger');
-        $mform->addElement('text', $name, $title);
-        $mform->setType($name, PARAM_INT);
-        $mform->setDefault($name, get_config('tool_messenger', 'locklimit'));
-        $mform->addHelpButton($name, $name, 'tool_messenger');
-
-        $name = 'cleanupduration';
-        $title = get_string('cleanupduration', 'tool_messenger');
-        $mform->addElement('duration', $name, $title);
-
-        $mform->addElement('submit', 'saveconfigbutton', get_string('saveconfigbutton', 'tool_messenger'));
 
         if (!isset($_POST["followup"]) or isset($_POST["sendmessagebutton"])) {
             $mform->addElement('hidden', 'followup', null);

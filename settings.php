@@ -18,8 +18,40 @@
 defined('MOODLE_INTERNAL') || die;
 
 if ($hassiteconfig) { // Needs this condition or there is error on login page.
-    $ADMIN->add('tools', new admin_externalpage('messenger',
-        get_string('tool_messenger', 'tool_messenger'),
-        new moodle_url('/admin/tool/messenger/adminsettings.php')));
+    $category = new admin_category('tool_messenger_category',
+        get_string('tool_messenger', 'tool_messenger'));
+    $ADMIN->add('tools', $category);
+
+    $settings = new admin_settingpage('tool_messenger',
+        get_string('general_config_header', 'tool_messenger'));
+    $ADMIN->add('tool_messenger_category', $settings);
+
+    $settings->add(new admin_setting_configtext('tool_messenger/emailspercron',
+        get_string('cronjobamount', 'tool_messenger'),
+        '',
+        1000
+    ));
+
+    $settings->add(new admin_setting_configtext('tool_messenger/sendinguserid',
+        get_string('sendinguserid', 'tool_messenger'),
+        '',
+        \core_user::get_noreply_user()->id
+    ));
+
+    $settings->add(new admin_setting_configduration('tool_messenger/lockdownlimit',
+        get_string('locklimit', 'tool_messenger'),
+        '',
+        5 * 60
+    ));
+
+    $settings->add(new admin_setting_configduration('tool_messenger/cleanupduration',
+        get_string('cleanupduration', 'tool_messenger'),
+        '',
+        90 * 24 * 60 * 60
+    )); // Dafault value is 180 days.
+
+    $ADMIN->add('tool_messenger_category', new admin_externalpage('tool_messenger_messaging',
+        get_string('sendmessage_section', 'tool_messenger'),
+        new moodle_url('/admin/tool/messenger/sendmessage.php')));
 }
 $settings = null;

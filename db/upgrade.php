@@ -39,7 +39,7 @@ defined('MOODLE_INTERNAL') || die();
 function xmldb_tool_messenger_upgrade ($oldversion) {
     global $DB;
     $dbman = $DB->get_manager();
-    if ($oldversion < 2021060402) {
+    if ($oldversion < 2021040602) {
 
         $table = new xmldb_table('tool_messenger_messagejobs');
 
@@ -67,7 +67,7 @@ function xmldb_tool_messenger_upgrade ($oldversion) {
         upgrade_plugin_savepoint(true, 2021060402, 'tool', 'messenger');
     }
 
-    if ($oldversion < 2021060403) {
+    if ($oldversion < 2021040603) {
 
         $table = new xmldb_table('tool_messenger_messagejobs');
 
@@ -82,7 +82,7 @@ function xmldb_tool_messenger_upgrade ($oldversion) {
         upgrade_plugin_savepoint(true, 2021060403, 'tool', 'messenger');
     }
 
-    if ($oldversion < 2021060410) {
+    if ($oldversion < 2021040610) {
         $table = new xmldb_table('tool_messenger_messagejobs');
         $field = new xmldb_field('userids', XMLDB_TYPE_TEXT, null, null, XMLDB_NOTNULL, null, null);
         if ($dbman->field_exists($table, $field)) {
