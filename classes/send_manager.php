@@ -36,17 +36,20 @@ class send_manager {
         if (!empty($parentid = $jobdata->get('parentid'))) {
             $parent = new message_persistent($parentid);
             $parentlimit = $parent->get('progress');
+            $roleids = explode(",", $parent->get('roleids'));
         }
         $userbatch = $this->get_userids($roleids, $knockoutdate, $progress, $limit, $parentlimit);
+        $maxid = -1;
         foreach ($userbatch as $userid) {
+            $maxid = max(intval($userid->userid), $maxid);
             $userto = \core_user::get_user($userid->userid);
             email_to_user($userto, $userfrom, $subject, $message);
         }
-        if ($limit > count($userbatch)) {
+        if ($limit > count($userbatch) && ($parentlimit == -1 or $parent->get('finished'))) {
             $jobdata->set('finished', 1);
         }
-        if (isset($userid)) {
-            $jobdata->set('progress', $userid->userid);
+        if (count($userbatch) > 0) {
+            $jobdata->set('progress', $maxid);
         }
         $jobdata->set('lock', 0); // Unlock.
         $jobdata->save();
@@ -76,15 +79,15 @@ class send_manager {
         foreach ($instantjobids as $instantjob) {
             $amount += $this->send_emails_for_job_with_limit($instantjob, -1);
         }
-        while ($amount < $cronlimit && $i < count($standardjobids)) {
-            $amount += $this->send_emails_for_job_with_limit($standardjobids[$i], $cronlimit);
+        while ($amount <= $cronlimit && $i < count($standardjobids)) {
+            $amount += $this->send_emails_for_job_with_limit($standardjobids[$i], ($cronlimit - $amount));
             $i++;
         }
     }
 
     public function get_userids($roleids, $knockoutdate, $progress, $limit, $parentlimit): array {
         global $DB;
-        if (count($roleids) == 0) {
+        if (count($roleids) == 0 or $roleids[0] == "") {
             return [];
         }
         $sql = "SELECT DISTINCT userid FROM {role_assignments} ra JOIN {user} u ON u.id = ra.userid";
@@ -97,11 +100,12 @@ class send_manager {
         if ($parentlimit >= 0) {
             $where .= " AND userid <= $parentlimit";
         }
+        $sqllimit = " ORDER BY userid ASC";
         if ($limit >= 0) {
-            $limit = " LIMIT $limit";
+            $sqllimit .= " LIMIT $limit";
         }
 
-        $userids = $DB->get_records_sql($sql . $where . $limit);
+        $userids = $DB->get_records_sql($sql . $where . $sqllimit);
         return $userids;
     }
 

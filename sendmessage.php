@@ -39,37 +39,12 @@ if (has_capability('moodle/site:config', context_system::instance())) {
 
     if ($data = $mform->get_data()) {
         if (isset($data->abort)) {
-            $persistent = new \tool_messenger\message_persistent(intval($data->abort));
-            $persistent->set('finished', 1);
-            $persistent->save();
+            $lib = new \tool_messenger\sendmaillib();
+            $lib->abort_job($data->abort);
         }
-        if (isset($data->sendmessagebutton) and
-            ((isset($data->recipients) and count($data->recipients) != 0) or isset($data->followup))) {
-
-            $record = new \stdClass();
-
-            $parentid = null;
-            if (isset($data->followup)) {
-                $record->parentid = $data->followup;
-                $parent = new \tool_messenger\message_persistent(intval($data->followup));
-            }
-            $knockoutdate = 0;
-            if ($data->knockout_enable) {
-                $knockoutdate = $data->knockout_date;
-            }
-
-            $record->message = $data->message['text'];
-            $record->subject = $data->subject;
-            $record->progress = 0;
-            $record->priority = $data->priority;
-            $record->finished = 0;
-            $record->parentid = $parentid;
-            $record->roleids = implode(",", $data->recipients);
-            $record->knockoutdate = $knockoutdate;
-            $record->instant = $data->directsend;
-
-            $persistent = new \tool_messenger\message_persistent(0, $record);
-            $job = $persistent->create();
+        if (isset($data->sendmessagebutton)) {
+            $lib = new \tool_messenger\sendmaillib();
+            $lib->register_new_job($data);
         }
     }
 
