@@ -20,6 +20,9 @@
                 <FIELD NAME="finished" TYPE="int" LENGTH="1" DEFAULT="0" NOTNULL="true" SEQUENCE="false" COMMENT="finished flag"/>
                 <FIELD NAME="parentid" TYPE="int" LENGTH="10" NOTNULL= "false" SEQUENCE="false" COMMENT="parentid"/>
                 <FIELD NAME="instant" SEQUENCE="false" TYPE="int" LENGTH="1" NOTNULL="false" COMMENT="ignore limit flag"/>
+                <FIELD NAME="senttonum" SEQUENCE="false" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" COMMENT="num of users message was sent to"/>
+                <FIELD NAME="aborted" SEQUENCE="false" TYPE="int" NOTNULL="true" LENGTH="1" DEFAULT="0"/>
+                <FIELD NAME="totalnumofusers" SEQUENCE="false" TYPE="int" NOTNULL="true" DEFAULT="0" LENGTH="10"/>
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id"/>

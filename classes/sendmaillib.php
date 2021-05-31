@@ -24,15 +24,19 @@ class sendmaillib {
 
             $record = new \stdClass();
 
-            $parentid = null;
-            if (isset($data->followup)) {
-                $record->parentid = $data->followup;
-                $parent = new \tool_messenger\message_persistent(intval($data->followup));
-                $parentid = $parent->get("id");
-            }
             $knockoutdate = 0;
             if ($data->knockout_enable) {
                 $knockoutdate = $data->knockout_date;
+            }
+
+            $parentid = null;
+            $roleids = implode(",", $data->recipients);
+            if (isset($data->followup) && $data->followup != 0) {
+                $record->parentid = $data->followup;
+                $parent = new \tool_messenger\message_persistent(intval($data->followup));
+                $parentid = $parent->get("id");
+                $knockoutdate = $parent->get('knockoutdate');
+                $roleids = $parent->get('roleids');
             }
 
             $record->message = $data->message['text'];
@@ -41,9 +45,17 @@ class sendmaillib {
             $record->priority = $data->priority;
             $record->finished = 0;
             $record->parentid = $parentid;
-            $record->roleids = implode(",", $data->recipients);
+            $record->roleids = $roleids;
             $record->knockoutdate = $knockoutdate;
             $record->instant = $data->directsend;
+
+            $manager = new \tool_messenger\send_manager();
+            $roles = $manager->get_userids(explode(",", $roleids), $knockoutdate, 0, -1, -1);
+            var_dump($roles);
+            var_dump(count($roles));
+            $record->totalnumofusers = count($roles);
+            $record->aborted = 0;
+            $record->senttonum = 0;
 
             $persistent = new \tool_messenger\message_persistent(0, $record);
             return $persistent->create();
@@ -54,6 +66,7 @@ class sendmaillib {
     public function abort_job ($jobid) {
         $persistent = new \tool_messenger\message_persistent(intval($jobid));
         $persistent->set('finished', 1);
+        $persistent->set('aborted', 1);
         $persistent->save();
     }
 

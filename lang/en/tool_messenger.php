@@ -44,6 +44,12 @@ $string['knockoutenable'] = 'Ignore users that havent logged in since some time'
 $string['cleanupduration'] = 'Save jobs for';
 $string['sending'] = 'Sending';
 $string['finished'] = 'Finished';
+$string['to'] = 'to';
+$string['predictionlink'] = 'predict num of emails to send';
+$string['predicitonlinktext'] = 'run prediction';
+$string['noprediction'] = "Prediction not run yet";
+$string['prediction_about'] = "About ";
+$string['prediction_sent'] = " e-mails will be sent";
 
 $string['sendmessage_section'] = "Send message";
 $string['general_config_header'] = "General Settings";
@@ -59,4 +65,8 @@ $string['invaliduserids'] = 'Supplied invalid userids';
 $string['invalidroleids'] = 'Supplied invalid roleids';
 $string['invalidknockoutdate'] = 'Supplied invalid knockoutdate';
 $string['invalidinstant'] = 'Supplied invalid instant';
+$string['invalidsenttonum'] = 'Supplied invalid to number';
+$string['invalidaborted'] = 'Supplied invalid aborted flag';
+$string['invalidnumoftotalusers'] = 'Supplied invalid amount of total users';
+$string['invalidnumofusers'] = 'Supplied invalid amount of users';
 

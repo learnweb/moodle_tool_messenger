@@ -100,5 +100,36 @@ function xmldb_tool_messenger_upgrade ($oldversion) {
 
     }
 
+    if ($oldversion < 2021043001) {
+        $table = new xmldb_table('tool_messenger_messagejobs');
+
+        $table->add_field('senttonum', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, 0);
+        $table->add_field('aborted', XMLDB_TYPE_INTEGER, '1', null, null, null, null);
+        foreach ($table->getFields() as $item) {
+            if (!$dbman->field_exists($table, $item)) {
+                $dbman->add_field($table, $item);
+            }
+        }
+
+        upgrade_plugin_savepoint(true, 2021043001, 'tool', 'messenger');
+    }
+
+    if ($oldversion < 2021053001) {
+        $table = new xmldb_table('tool_messenger_messagejobs');
+        $field = new xmldb_field('aborted', XMLDB_TYPE_INTEGER, '1', null, null, null, null);
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_field($table, $field);
+        }
+
+        $table->add_field('aborted', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, 0);
+        $table->add_field('totalnumofusers', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, 0);
+        foreach ($table->getFields() as $item) {
+            if (!$dbman->field_exists($table, $item)) {
+                $dbman->add_field($table, $item);
+            }
+        }
+
+    }
+
     return true;
 }

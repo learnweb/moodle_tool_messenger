@@ -26,5 +26,15 @@ $tasks = array(
         'month' => '*',
         'dayofweek' => '*',
         'disabled' => 0
-    )
+    ),
+    array(
+        'classname' => '\tool_messenger\task\cleanup_jobs',
+        'blocking' => 0,
+        'minute' => '7',
+        'hour' => '3',
+        'day' => '1',
+        'month' => '*',
+        'dayofweek' => '*',
+        'disabled' => 0
+    ),
 );

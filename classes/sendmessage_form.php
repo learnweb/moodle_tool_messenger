@@ -37,9 +37,11 @@ class sendmessage_form extends moodleform {
 
         $mform->addElement('html', '<div id="adminsettings">');
 
-        if (!isset($_POST["followup"]) or isset($_POST["sendmessagebutton"])) {
+        $followuprequest = isset($_POST["followup"]) and !isset($_POST["sendmessagebutton"]);
+        if (!$followuprequest) {
             $mform->addElement('hidden', 'followup', null);
             $mform->setType('followup', PARAM_INT);
+            $mform->setDefault('followup', 0);
         } else {
             $name = 'followup';
             $title = get_string('followupto', 'tool_messenger');
@@ -47,6 +49,7 @@ class sendmessage_form extends moodleform {
             $mform->setType($name, PARAM_INT);
             $mform->addHelpButton($name, $name, 'tool_messenger');
             $mform->setDefault($name, $_POST["followup"]);
+            $parent = new message_persistent($_POST["followup"]);
         }
         $mform->addElement('hidden', 'abort', null);
         $mform->setType('abort', PARAM_INT);
@@ -65,13 +68,20 @@ class sendmessage_form extends moodleform {
 
         $name = 'recipients';
         $title = get_string('sendto', 'tool_messenger');
-        $roles = $this->get_roles();
-        $mform->addElement('select', $name, $title, array_keys($roles), array_values($roles))->setMultiple(true);
-
+        $roles = $this->get_reverse_roles();
+        $mform->addElement('select', $name, $title, $roles)->setMultiple(true);
+        if ($followuprequest) {
+            $mform->disabledIf($name, 'followup', 'neq', 0);
+        }
         $name = 'knockout_enable';
         $title = get_string('knockoutenable', 'tool_messenger');
         $mform->addElement('advcheckbox', $name, $title, ' ');
-        $mform->setDefault($name, 1);
+        $default = 1;
+        if ($followuprequest) {
+            $default = $parent->get('knockoutdate') == 0;
+            $mform->disabledIf($name, 'followup', 'neq', 0);
+        }
+        $mform->setDefault($name, $default);
 
         $name = 'knockout_date';
         $title = get_string ('knockoutdate', 'tool_messenger');
@@ -81,9 +91,23 @@ class sendmessage_form extends moodleform {
             'timezone'  => 99,
             'optional'  => false
         ));
-        $timestamp = strtotime('-1 years', time());
-        $mform->disabledIf($name, 'knockout_enable');
-        $mform->setDefault($name, $timestamp);
+        if ($followuprequest) {
+            $timestamp = (int) $parent->get('knockoutdate');
+            $mform->setDefault($name, $timestamp);
+            $mform->disabledIf($name, 'followup', 'neq', 0);
+        } else {
+            $timestamp = strtotime('-1 years', time());
+            $mform->setDefault($name, $timestamp);
+            $mform->disabledIf($name, 'knockout_enable');
+        }
+
+        $name = 'predictionlink';
+        $title = get_string($name, 'tool_messenger');
+        $linktext = get_string('predicitonlinktext', 'tool_messenger');
+        $mform->addElement('static', '', $title, '<div col-md-9 form-inline felement>'.
+            '<a href="" id="predictiontrigger">'. $linktext . '</a> <div id="predictionbox">' .
+            get_string('noprediction', 'tool_messenger') . '</div>'.
+            '</div>');
 
         $name = 'priority';
         $title = get_string('priority', 'tool_messenger');
@@ -108,6 +132,11 @@ class sendmessage_form extends moodleform {
     private function get_roles () {
         global $DB;
         return $DB->get_records_sql_menu('SELECT shortname, id FROM {role}');
+    }
+
+    private function get_reverse_roles () {
+        global $DB;
+        return $DB->get_records_sql_menu('SELECT id, shortname FROM {role}');
     }
 
 
@@ -138,13 +167,17 @@ class sendmessage_form extends moodleform {
         $attributes = array();
         $attributes['class'] = 'header c3';
         $attributes['scope'] = 'col';
-        $output .= html_writer::tag('th', get_string('progress', 'tool_messenger'), $attributes);
+        $output .= html_writer::tag('th', get_string('to', 'tool_messenger'), $attributes);
         $attributes = array();
         $attributes['class'] = 'header c4';
         $attributes['scope'] = 'col';
-        $output .= html_writer::tag('th', get_string('priority', 'tool_messenger'), $attributes);
+        $output .= html_writer::tag('th', get_string('progress', 'tool_messenger'), $attributes);
         $attributes = array();
         $attributes['class'] = 'header c5';
+        $attributes['scope'] = 'col';
+        $output .= html_writer::tag('th', get_string('priority', 'tool_messenger'), $attributes);
+        $attributes = array();
+        $attributes['class'] = 'header c6';
         $attributes['scope'] = 'col';
         $output .= html_writer::tag('th', get_string('options', 'tool_messenger'), $attributes);
         $output .= html_writer::end_tag('tr');
@@ -158,14 +191,11 @@ class sendmessage_form extends moodleform {
      * @return string
      */
     private function table_body() {
-        global $USER;
         $mform = $this->_form;
         $records = $this->getrecords();
 
         $mform->addElement('html', '<tbody>');
-        $i = 0;
-        $startdates = [];
-        $enddates = [];
+        $roles = $this->get_reverse_roles();
         foreach ($records as $record) {
             $mform->addElement('html', '<tr>');
             $mform->addElement('html', '<td class="cell c1"><div>' .
@@ -175,17 +205,34 @@ class sendmessage_form extends moodleform {
                 date('d.m.Y H:i', $record->get("timecreated")) .
                 '</div></td>');
             $mform->addElement('html', '<td class="cell c2"><div>' .
-                "Show message" .
+                '<button class="optionbutton btn btn-primary showmessagebutton" messageid="' . $record->get("id").
+                '">Show message </button>' .
                 '</div></td>');
-            $status = $record->get("finished") ? 'finished' : 'sending';
-            $mform->addElement('html', '<td class="cell c3"><div>' .
-                get_string($status, 'tool_messenger') .
+            // @codingStandardsIgnoreStart phpcs:disable
+            $to = implode(", ", array_map(function ($item) use ($roles) {
+                if ($roles[$item])
+                    return $roles[$item];
+                return 'deleted role';
+                }, // Phpcs wants this to be one ident level up.
+                explode(",", $record->get('roleids'))));
+            // @codingStandardsIgnoreEnd phpcs:enable
+            $mform->addElement('html', '<td class="cell c3"><div class="tablewrap">' .
+                 $to .
                 '</div></td>');
+            if ($record->get("finished")) {
+                $status = $record->get('aborted') == 1 ? 'aborted' : 'finished';
+                $statusstring = get_string($status, 'tool_messenger');
+            } else {
+                $statusstring = $record->get('senttonum') . " / " . $record->get("totalnumofusers");
+            }
             $mform->addElement('html', '<td class="cell c4"><div>' .
+                $statusstring .
+                '</div></td>');
+            $mform->addElement('html', '<td class="cell c5"><div>' .
                 $record->get("priority") .
                 '</div></td>');
 
-            $mform->addElement('html', '<td class="cell c5">'.
+            $mform->addElement('html', '<td class="cell c6">'.
                 '<input type="submit" class = "optionbutton btn btn-primary" name="followup" id="followup_'
                 . $record->get('id') . '"
                 value="' . get_string('followup', 'tool_messenger') . '">'
@@ -199,7 +246,6 @@ class sendmessage_form extends moodleform {
             }
             $mform->addElement('html', '</tr>');
         }
-        global $PAGE;
         $mform->addElement('html', '</tbody>');
         $mform->addElement('html', '</table>');
     }

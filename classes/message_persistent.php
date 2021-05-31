@@ -77,6 +77,18 @@ class message_persistent extends persistent{
                 'type' => PARAM_INT,
                 'message' => new \lang_string('invalidinstant', 'tool_messenger')
             ),
+            'senttonum' => array (
+                'type' => PARAM_INT,
+                'message' => new \lang_string('invalidsenttonum', 'tool_messenger')
+            ),
+            'aborted' => array (
+                'type' => PARAM_INT,
+                'message' => new \lang_string('invalidaborted', 'tool_messenger')
+            ),
+            'totalnumofusers' => array (
+                'type' => PARAM_INT,
+                'message' => new \lang_string('invalidnumofusers', 'tool_messenger')
+            ),
         );
     }
 

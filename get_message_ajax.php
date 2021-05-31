@@ -14,18 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Plugin version and other meta-data are defined here.
- *
- * @package     tool_messenger
- * @copyright   2021 Robin Tschudi
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
+require_once(__DIR__ . '/../../../config.php');
 
-defined('MOODLE_INTERNAL') || die();
+require_login();
+has_capability('moodle/site:config', context_system::instance()) || die();
 
-$plugin->component = 'tool_messenger';
-$plugin->release   = 'v3.9-r1'; // First release under Moodle 3.8.
-$plugin->version = 2021053001;
-$plugin->requires = 2017051500;
-$plugin->maturity = MATURITY_ALPHA;
+$id = required_param('id', PARAM_INT);
+
+$message = $DB->get_field(\tool_messenger\message_persistent::TABLE, 'message', array('id' => $id));
+$subject = $DB->get_field(\tool_messenger\message_persistent::TABLE, 'subject', array('id' => $id));
+
+print(json_encode(array('message' => $message, 'subject' => $subject)));

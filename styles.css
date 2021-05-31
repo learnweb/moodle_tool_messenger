@@ -25,3 +25,7 @@
     width: 0;
     height: 0;
 }
+
+.tool_messenger .tablewrap {
+    white-space: break-spaces;
+}

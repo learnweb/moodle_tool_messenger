@@ -37,6 +37,7 @@ class send_manager {
             $parent = new message_persistent($parentid);
             $parentlimit = $parent->get('progress');
             $roleids = explode(",", $parent->get('roleids'));
+            $knockoutdate = $jobdata->get('knockoutdate');
         }
         $userbatch = $this->get_userids($roleids, $knockoutdate, $progress, $limit, $parentlimit);
         $maxid = -1;
@@ -50,6 +51,7 @@ class send_manager {
         }
         if (count($userbatch) > 0) {
             $jobdata->set('progress', $maxid);
+            $jobdata->set('senttonum', $jobdata->get('senttonum') + count($userbatch));
         }
         $jobdata->set('lock', 0); // Unlock.
         $jobdata->save();
