@@ -51,8 +51,6 @@ class sendmaillib {
 
             $manager = new \tool_messenger\send_manager();
             $roles = $manager->get_userids(explode(",", $roleids), $knockoutdate, 0, -1, -1);
-            var_dump($roles);
-            var_dump(count($roles));
             $record->totalnumofusers = count($roles);
             $record->aborted = 0;
             $record->senttonum = 0;

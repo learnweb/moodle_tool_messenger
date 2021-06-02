@@ -18,7 +18,9 @@ define(['jquery', 'core/modal_factory', 'core/url'], function ($, modal_factory,
                 for (let i = 0; i < mutation.addedNodes.length; i++) {
                     let node = mutation.addedNodes[i];
                     if (node && node.title && node.title == "HTML") {
-                        node.click();
+                        if ($('.CodeMirror.cm-s-default.CodeMirror-wrap').length == 0) {
+                            node.click();
+                        }
                         observer.disconnect();
                     }
                 }
