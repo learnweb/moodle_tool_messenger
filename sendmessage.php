@@ -40,7 +40,7 @@ if (has_capability('moodle/site:config', context_system::instance())) {
     $mform = new tool_messenger\sendmessage_form();
 
     if ($data = $mform->get_data()) {
-        if (isset($data->abort)) {
+        if (isset($data->abort) && $data->abort > 0) {
             $lib = new \tool_messenger\sendmaillib();
             $lib->abort_job($data->abort);
         }
@@ -53,7 +53,7 @@ if (has_capability('moodle/site:config', context_system::instance())) {
     $mform = new tool_messenger\sendmessage_form();
 
     $PAGE->requires->js_call_amd('tool_messenger/options', 'init');
-    if ($data && $data->followup) {
+    if ($data && $data->followup && $data->folowup > 0) {
         $parent = new message_persistent($data->followup);
         $PAGE->requires->js_call_amd('tool_messenger/followup', 'set_correct_parent_date', array($parent->get('knockoutdate')));
     }
