@@ -21,6 +21,8 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use tool_messenger\message_persistent;
+
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 require_once($CFG->dirroot . '/course/lib.php');
@@ -51,6 +53,10 @@ if (has_capability('moodle/site:config', context_system::instance())) {
     $mform = new tool_messenger\sendmessage_form();
 
     $PAGE->requires->js_call_amd('tool_messenger/options', 'init');
+    if ($data && $data->followup) {
+        $parent = new message_persistent($data->followup);
+        $PAGE->requires->js_call_amd('tool_messenger/followup', 'set_correct_parent_date', array($parent->get('knockoutdate')));
+    }
     $mform->display();
     echo $OUTPUT->footer();
 }
