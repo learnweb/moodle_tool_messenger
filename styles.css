@@ -1,12 +1,12 @@
-.tool_messenger .finished {
+.tool_messenger .statusfinished {
     color: green;
 }
 
-.tool_messenger .aborted {
+.tool_messenger .statusaborted {
     color: red;
 }
 
-.tool_messenger .inprogress {
+.tool_messenger .statussending {
     color: orange;
 }
 

@@ -171,13 +171,17 @@ class sendmessage_form extends moodleform {
         $attributes = array();
         $attributes['class'] = 'header c4';
         $attributes['scope'] = 'col';
-        $output .= html_writer::tag('th', get_string('progress', 'tool_messenger'), $attributes);
+        $output .= html_writer::tag('th', get_string('knockoutdatetable', 'tool_messenger'), $attributes);
         $attributes = array();
         $attributes['class'] = 'header c5';
         $attributes['scope'] = 'col';
-        $output .= html_writer::tag('th', get_string('priority', 'tool_messenger'), $attributes);
+        $output .= html_writer::tag('th', get_string('progress', 'tool_messenger'), $attributes);
         $attributes = array();
         $attributes['class'] = 'header c6';
+        $attributes['scope'] = 'col';
+        $output .= html_writer::tag('th', get_string('priority', 'tool_messenger'), $attributes);
+        $attributes = array();
+        $attributes['class'] = 'header c7';
         $attributes['scope'] = 'col';
         $output .= html_writer::tag('th', get_string('options', 'tool_messenger'), $attributes);
         $output .= html_writer::end_tag('tr');
@@ -219,20 +223,20 @@ class sendmessage_form extends moodleform {
             $mform->addElement('html', '<td class="cell c3"><div class="tablewrap">' .
                  $to .
                 '</div></td>');
-            if ($record->get("finished")) {
-                $status = $record->get('aborted') == 1 ? 'aborted' : 'finished';
-                $statusstring = get_string($status, 'tool_messenger');
-            } else {
-                $statusstring = $record->get('senttonum') . " / " . $record->get("totalnumofusers");
-            }
-            $mform->addElement('html', '<td class="cell c4"><div>' .
-                $statusstring .
+            $mform->addElement('html', '<td class="cell c4"><div class="tablewrap">' .
+                date('d M Y', $record->get('knockoutdate')) .
                 '</div></td>');
+            $progressstring = $record->get('senttonum') . " / " . $record->get("totalnumofusers");
+            $statusstring = $record->get('finished') ? $record->get('aborted') ? 'statusaborted' : 'statusfinished'
+                : 'statussending';
             $mform->addElement('html', '<td class="cell c5"><div>' .
-                $record->get("priority") .
+                "<span class='$statusstring'>$progressstring</span>" .
+                '</div></td>');
+            $mform->addElement('html', '<td class="cell c6"><div>' .
+                ($record->get("priority") + 1) .
                 '</div></td>');
 
-            $mform->addElement('html', '<td class="cell c6">'.
+            $mform->addElement('html', '<td class="cell c7">'.
                 '<input type="submit" class = "optionbutton btn btn-primary" name="followup" id="followup_'
                 . $record->get('id') . '"
                 value="' . get_string('followup', 'tool_messenger') . '">'

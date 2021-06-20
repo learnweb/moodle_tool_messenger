@@ -50,6 +50,7 @@ $string['predicitonlinktext'] = 'run prediction';
 $string['noprediction'] = "Prediction not run yet";
 $string['prediction_about'] = "About ";
 $string['prediction_sent'] = " e-mails will be sent";
+$string['knockoutdatetable'] = "latest login before";
 
 $string['sendmessage_section'] = "Send message";
 $string['general_config_header'] = "General Settings";
