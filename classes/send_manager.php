@@ -44,6 +44,11 @@ class send_manager {
         foreach ($userbatch as $userid) {
             $maxid = max(intval($userid->userid), $maxid);
             $userto = \core_user::get_user($userid->userid);
+            // Why is the return of email_to_user not checked?
+            // email_to_user returns true if sending was successfull false if not. However it also returns false...
+            // if the error is with the users config, for example a deleted user, a user with no email etc.
+            // because of this if we'd stop execution on getting a false here we might get stuck on a single invalid...
+            // user record.
             email_to_user($userto, $userfrom, $subject, $message);
         }
         if ($limit > count($userbatch) && ($parentlimit == -1 or $parent->get('finished'))) {
@@ -97,7 +102,7 @@ class send_manager {
         for ($i = 1; $i < count($roleids); $i++) {
             $where .= "OR roleid = " . $roleids[$i];
         }
-        $where .= ") AND u.lastaccess > $knockoutdate";
+        $where .= ") AND u.lastaccess >= $knockoutdate";
         $where .= " AND userid > $progress";
         if ($parentlimit >= 0) {
             $where .= " AND userid <= $parentlimit";

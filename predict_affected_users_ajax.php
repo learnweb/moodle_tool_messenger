@@ -35,7 +35,6 @@ if ($parentid != -1) {
     $knockoutdate = $parent->get('knockoutdate');
     $roles = $parent->get('roleids');
 }
-
 $manager = new \tool_messenger\send_manager();
 echo get_string('prediction_about', PLUGINNAME);
 echo count($manager->get_userids(explode(",", $roles), $knockoutdate, 0, -1, -1));

@@ -77,10 +77,15 @@ define(['jquery', 'core/modal_factory', 'core/url'], function ($, modal_factory,
                 $('#id_recipients').children(':selected').each(function (i, x) {
                     roles.push(x.value);
                 });
-                var day = $('#id_knockout_date_day').val();
-                var month = $('#id_knockout_date_month').val();
-                var year = $('#id_knockout_date_year').val();
-                var unix = Math.floor(new Date(year + "." + month + "." + day).getTime() / 1000);
+                var unix;
+                if ($('#id_knockout_enable').prop('checked')) {
+                    var day = $('#id_knockout_date_day').val();
+                    var month = $('#id_knockout_date_month').val();
+                    var year = $('#id_knockout_date_year').val();
+                    unix = Math.floor(new Date(year + "." + month + "." + day).getTime() / 1000);
+                } else {
+                    unix = -1;
+                }
                 s = url.relativeUrl("/admin/tool/messenger/predict_affected_users_ajax.php",
                     {'roles': roles.join(","), 'knockoutdate': unix}, true);
             }
