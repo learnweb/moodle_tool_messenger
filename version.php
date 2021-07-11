@@ -25,7 +25,6 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'tool_messenger';
-$plugin->release   = 'v3.9-r1'; // First release under Moodle 3.8.
 $plugin->version = 2021070800;
 $plugin->requires = 2017051500;
 $plugin->maturity = MATURITY_ALPHA;
