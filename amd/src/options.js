@@ -9,32 +9,6 @@ define(['jquery', 'core/modal_factory', 'core/url'], function ($, modal_factory,
         };
     };
 
-    var atto_html_mode = function () {
-        let observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                if (!mutation.addedNodes) {
-                    return;
-                }
-                for (let i = 0; i < mutation.addedNodes.length; i++) {
-                    let node = mutation.addedNodes[i];
-                    if (node && node.title && node.title == "HTML") {
-                        if ($('.CodeMirror.cm-s-default.CodeMirror-wrap').length == 0) {
-                            node.click();
-                        }
-                        observer.disconnect();
-                    }
-                }
-            });
-        });
-
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true,
-            attributes: false,
-            characterData: false
-        });
-    };
-
     var show_message = function (event) {
         event.preventDefault();
         var button = event.currentTarget;
@@ -116,7 +90,6 @@ define(['jquery', 'core/modal_factory', 'core/url'], function ($, modal_factory,
             });
             initialize_showmessage_buttons();
             init_predicitonlink();
-            atto_html_mode();
         });
     };
 

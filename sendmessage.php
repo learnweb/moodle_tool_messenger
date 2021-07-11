@@ -53,7 +53,7 @@ if (has_capability('moodle/site:config', context_system::instance())) {
     $mform = new tool_messenger\sendmessage_form();
 
     $PAGE->requires->js_call_amd('tool_messenger/options', 'init');
-    if ($data && $data->followup && $data->folowup > 0) {
+    if ($data && $data->followup && $data->followup > 0) {
         $parent = new message_persistent($data->followup);
         $PAGE->requires->js_call_amd('tool_messenger/followup', 'set_correct_parent_date', array($parent->get('knockoutdate')));
     }
