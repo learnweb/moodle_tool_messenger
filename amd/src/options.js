@@ -1,11 +1,11 @@
-define(['jquery', 'core/modal_factory', 'core/url'], function ($, modal_factory, url) {
+define(['jquery', 'core/modal_factory', 'core/url'], function ($, modalfactory, url) {
 
-    var append = function(form_id, name, value) {
+    var append = function(formid, name, value) {
         return function() {
             $("<input />").attr("type", "hidden")
                 .attr("name", name)
                 .attr("value", value)
-                .appendTo("#" + form_id);
+                .appendTo("#" + formid);
         };
     };
 
@@ -17,8 +17,8 @@ define(['jquery', 'core/modal_factory', 'core/url'], function ($, modal_factory,
         xhttp.onreadystatechange = function () {
             if (this.readyState === 4 && this.status === 200) {
                 var data = JSON.parse(this.responseText);
-                modal_factory.create({
-                    type: modal_factory.types.ALERT,
+                modalfactory.create({
+                    type: modalfactory.types.ALERT,
                     title: data.subject,
                     body: data.message
                 }).then(function (modal) {

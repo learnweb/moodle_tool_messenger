@@ -45,12 +45,6 @@ class message_persistent extends persistent{
                 'type' => PARAM_INT,
                 'message' => new \lang_string('invalidprogress', 'tool_messenger')
             ),
-            'lock' => array (
-                'type' => PARAM_INT,
-                'message' => new \lang_string('invalidlock', 'tool_messenger'),
-                'null' => NULL_ALLOWED,
-                'default' => null
-            ),
             'priority' => array(
                 'type' => PARAM_INT,
                 'message' => new \lang_string('invalidpriority', 'tool_messenger')
@@ -90,28 +84,6 @@ class message_persistent extends persistent{
                 'message' => new \lang_string('invalidnumofusers', 'tool_messenger')
             ),
         );
-    }
-
-    /**
-     * @throws \dml_exception
-     */
-    public static function get_open_jobs_with_priority(): array {
-        global $DB;
-        return $DB->get_records_sql("SELECT * FROM {" . TABLE . "} WHERE finished = 0");
-    }
-
-    public static function try_lock ($persistent) {
-        $lock = $persistent->get('lock');
-        if ($lock != 0) {
-            // Sanity check.
-            $sanitytimeperiod = get_config('tool_messenger', 'lock_limit');
-            if ($sanitytimeperiod and $lock + $sanitytimeperiod >= time()) {
-                return false;
-            }
-        }
-        $persistent->set('lock', time());
-        $persistent->save();
-        return true;
     }
 
 }

@@ -16,7 +16,8 @@
 
 $string['pluginname'] = "Admin messenger";
 $string['tool_messenger'] = "Admin messenger";
-$string['sendmailstask'] = "Send mails task for admin messanger";
+$string['sendmailstask'] = "Send mails task for the admin messenger plugin";
+$string['cleanupjobstask'] = "Clean up old jobs from the admin messenger plugin";
 $string['settings'] = "Adminmessenger";
 $string['cronjobamount'] = "Number of records per cronjob";
 $string['message'] = "Message";

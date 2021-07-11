@@ -131,5 +131,13 @@ function xmldb_tool_messenger_upgrade ($oldversion) {
 
     }
 
+    if ($oldversion < 2021070800) {
+        $table = new xmldb_table('tool_messenger_messagejobs');
+        $field = new xmldb_field('lock', XMLDB_TYPE_INTEGER, '10', null, null, null);
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_field($table, $field);
+        }
+    }
+
     return true;
 }

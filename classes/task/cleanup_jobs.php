@@ -21,17 +21,17 @@ use core\task\scheduled_task;
 class cleanup_jobs extends scheduled_task {
 
     public function get_name() {
-        // TODO: Implement get_name() method.
+        return get_string('cleanupjobstask', 'tool_messenger');
     }
 
     public function execute() {
         global $DB;
         $time = time();
-        $period = get_config('tool_messenger', 'cleanupduration');
-        if (!$period) {
+        $saveperiod = get_config('tool_messenger', 'cleanupduration');
+        if (!$saveperiod) {
             return;
         }
-        $knockoutdate = $time - $period;
+        $knockoutdate = $time - $saveperiod;
         $DB->execute('DELETE FROM {tool_messenger_messagejobs} WHERE timemodified < ' . $knockoutdate);
     }
 }

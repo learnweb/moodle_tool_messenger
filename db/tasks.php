@@ -18,7 +18,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $tasks = array(
     array(
-        'classname' => '\tool_messenger\task\sendmails',
+        'classname' => '\tool_messenger\task\send_mails',
         'blocking' => 0,
         'minute' => '*',
         'hour' => '*',

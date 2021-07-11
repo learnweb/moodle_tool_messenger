@@ -21,17 +21,14 @@ defined('MOODLE_INTERNAL') || die();
 class send_manager {
 
     public function send_emails_for_job_with_limit($jobid, $limit) {
-        global $DB;
         $jobdata = new message_persistent($jobid);
-        if (!message_persistent::try_lock($jobdata)) {
-            return 0;
-        }
         $progress = $jobdata->get('progress');
         $message = $jobdata->get('message');
         $subject = $jobdata->get('subject');
         $roleids = explode(",", $jobdata->get('roleids'));
         $knockoutdate = $jobdata->get('knockoutdate');
         $userfrom = \core_user::get_user(get_config('tool_messenger', 'sendinguserid'));
+
         $parentlimit = -1;
         if (!empty($parentid = $jobdata->get('parentid'))) {
             $parent = new message_persistent($parentid);
@@ -39,10 +36,11 @@ class send_manager {
             $roleids = explode(",", $parent->get('roleids'));
             $knockoutdate = $jobdata->get('knockoutdate');
         }
+
         $userbatch = $this->get_userids($roleids, $knockoutdate, $progress, $limit, $parentlimit);
-        $maxid = -1;
+        $lastprocesseduser = -1;
         foreach ($userbatch as $userid) {
-            $maxid = max(intval($userid->userid), $maxid);
+            $lastprocesseduser = max(intval($userid->userid), $lastprocesseduser);
             $userto = \core_user::get_user($userid->userid);
             // Why is the return of email_to_user not checked?
             // email_to_user returns true if sending was successfull false if not. However it also returns false...
@@ -51,20 +49,16 @@ class send_manager {
             // user record.
             email_to_user($userto, $userfrom, $subject, $message);
         }
-        if ($limit > count($userbatch) && ($parentlimit == -1 or $parent->get('finished'))) {
+        $numofprocessedusers = count($userbatch);
+        if ($limit > $numofprocessedusers && ($parentlimit == -1 or $parent->get('finished'))) {
             $jobdata->set('finished', 1);
         }
-        if (count($userbatch) > 0) {
-            $jobdata->set('progress', $maxid);
-            $jobdata->set('senttonum', $jobdata->get('senttonum') + count($userbatch));
+        if ($numofprocessedusers > 0) {
+            $jobdata->set('progress', $lastprocesseduser);
+            $jobdata->set('senttonum', $jobdata->get('senttonum') + $numofprocessedusers);
         }
-        $jobdata->set('lock', 0); // Unlock.
         $jobdata->save();
-        return count($userbatch);
-    }
-
-    public function send_emails_for_job($jobid) {
-        $this->send_emails_for_job_with_limit($jobid, -1);
+        return $numofprocessedusers;
     }
 
     public function run_to_cronlimit() {
@@ -81,13 +75,13 @@ class send_manager {
             return;
         }
 
-        $amount = 0;
+        $amountofmailssent = 0;
         $i = 0;
         foreach ($instantjobids as $instantjob) {
-            $amount += $this->send_emails_for_job_with_limit($instantjob, -1);
+            $amountofmailssent += $this->send_emails_for_job_with_limit($instantjob, -1);
         }
-        while ($amount <= $cronlimit && $i < count($standardjobids)) {
-            $amount += $this->send_emails_for_job_with_limit($standardjobids[$i], ($cronlimit - $amount));
+        while ($amountofmailssent <= $cronlimit && $i < count($standardjobids)) {
+            $amountofmailssent += $this->send_emails_for_job_with_limit($standardjobids[$i], ($cronlimit - $amountofmailssent));
             $i++;
         }
     }

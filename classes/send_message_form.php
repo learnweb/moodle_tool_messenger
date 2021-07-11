@@ -31,7 +31,7 @@ defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . '/formslib.php');
 
-class sendmessage_form extends moodleform {
+class send_message_form extends moodleform {
     protected function definition() {
         $mform = $this->_form;
 
@@ -68,7 +68,7 @@ class sendmessage_form extends moodleform {
 
         $name = 'recipients';
         $title = get_string('sendto', 'tool_messenger');
-        $roles = $this->get_reverse_roles();
+        $roles = $this->get_roles();
         $mform->addElement('select', $name, $title, $roles)->setMultiple(true);
         if ($followuprequest) {
             $mform->disabledIf($name, 'followup', 'neq', 0);
@@ -131,11 +131,6 @@ class sendmessage_form extends moodleform {
 
     private function get_roles () {
         global $DB;
-        return $DB->get_records_sql_menu('SELECT shortname, id FROM {role}');
-    }
-
-    private function get_reverse_roles () {
-        global $DB;
         return $DB->get_records_sql_menu('SELECT id, shortname FROM {role}');
     }
 
@@ -196,10 +191,10 @@ class sendmessage_form extends moodleform {
      */
     private function table_body() {
         $mform = $this->_form;
-        $records = $this->getrecords();
+        $records = $this->get_records();
 
         $mform->addElement('html', '<tbody>');
-        $roles = $this->get_reverse_roles();
+        $roles = $this->get_roles();
         foreach ($records as $record) {
             $mform->addElement('html', '<tr>');
             $mform->addElement('html', '<td class="cell c1"><div>' .
@@ -258,7 +253,7 @@ class sendmessage_form extends moodleform {
      * Returns all messagejobs.
      * @return array
      */
-    private function getrecords() {
+    private function get_records() {
         $records = \tool_messenger\message_persistent::get_records();
         return $records;
     }

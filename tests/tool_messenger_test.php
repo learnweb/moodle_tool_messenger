@@ -53,7 +53,7 @@ class tool_messenger_testcase extends advanced_testcase {
         $data->knockout_enable = 0;
         $data->priority = 1;
 
-        $lib = new \tool_messenger\sendmaillib();
+        $lib = new \tool_messenger\locallib();
         $lib->register_new_job($data);
 
         $sink = $this->redirectEmails();
@@ -76,7 +76,7 @@ class tool_messenger_testcase extends advanced_testcase {
         $data->knockout_enable = 0;
         $data->priority = 1;
 
-        $lib = new \tool_messenger\sendmaillib();
+        $lib = new \tool_messenger\locallib();
         $lib->register_new_job($data);
 
         $sink = $this->redirectEmails();
@@ -102,7 +102,7 @@ class tool_messenger_testcase extends advanced_testcase {
         $data->knockout_date = $timestamplessthanoneyearago;
         $data->priority = 1;
 
-        $lib = new \tool_messenger\sendmaillib();
+        $lib = new \tool_messenger\locallib();
         $lib->register_new_job($data);
 
         $sink = $this->redirectEmails();
@@ -124,7 +124,7 @@ class tool_messenger_testcase extends advanced_testcase {
         $data->knockout_date = $timestamplessthanoneyearago;
         $data->priority = 1;
 
-        $lib = new \tool_messenger\sendmaillib();
+        $lib = new \tool_messenger\locallib();
         $lib->register_new_job($data);
 
         $sink = $this->redirectEmails();
@@ -144,7 +144,7 @@ class tool_messenger_testcase extends advanced_testcase {
         $data->knockout_enable = 0;
         $data->priority = 1;
 
-        $lib = new \tool_messenger\sendmaillib();
+        $lib = new \tool_messenger\locallib();
         $parentid = $lib->register_new_job($data);
 
         $data->recipients = array();
@@ -192,7 +192,7 @@ class tool_messenger_testcase extends advanced_testcase {
         $data->knockout_enable = 0;
         $data->priority = 1;
 
-        $lib = new \tool_messenger\sendmaillib();
+        $lib = new \tool_messenger\locallib();
         $jobid = $lib->register_new_job($data);
         $lib->abort_job($jobid->get('id'));
 
@@ -215,7 +215,7 @@ class tool_messenger_testcase extends advanced_testcase {
         $data->knockout_enable = 0;
         $data->priority = 1;
 
-        $lib = new \tool_messenger\sendmaillib();
+        $lib = new \tool_messenger\locallib();
         $lib->register_new_job($data);
         $data->priority = 2;
         $data->message = array('text' => 'prioritymessage');

@@ -37,20 +37,20 @@ if (has_capability('moodle/site:config', context_system::instance())) {
     echo $OUTPUT->header();
     echo $OUTPUT->heading(get_string('settings', 'tool_messenger'));
 
-    $mform = new tool_messenger\sendmessage_form();
+    $mform = new tool_messenger\send_message_form();
 
     if ($data = $mform->get_data()) {
         if (isset($data->abort) && $data->abort > 0) {
-            $lib = new \tool_messenger\sendmaillib();
+            $lib = new \tool_messenger\locallib();
             $lib->abort_job($data->abort);
         }
         if (isset($data->sendmessagebutton)) {
-            $lib = new \tool_messenger\sendmaillib();
+            $lib = new \tool_messenger\locallib();
             $lib->register_new_job($data);
         }
     }
 
-    $mform = new tool_messenger\sendmessage_form();
+    $mform = new tool_messenger\send_message_form();
 
     $PAGE->requires->js_call_amd('tool_messenger/options', 'init');
     if ($data && $data->followup && $data->followup > 0) {

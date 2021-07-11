@@ -21,7 +21,7 @@ use tool_messenger\send_manager;
 defined('MOODLE_INTERNAL') || die();
 
 
-class sendmails extends \core\task\scheduled_task {
+class send_mails extends \core\task\scheduled_task {
     /**
      * Get a descriptive name for this task (shown to admins).
      *

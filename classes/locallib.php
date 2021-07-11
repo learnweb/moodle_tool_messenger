@@ -17,7 +17,7 @@
 namespace tool_messenger;
 
 
-class sendmaillib {
+class locallib {
 
     public function register_new_job ($data) {
         if ((isset($data->recipients) and count($data->recipients) != 0) or isset($data->followup)) {

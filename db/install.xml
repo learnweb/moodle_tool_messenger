@@ -15,7 +15,6 @@
                 <FIELD NAME="progress" TYPE="int" LENGTH="5" NOTNULL="true" SEQUENCE="false" COMMENT="current progress"/>
                 <FIELD NAME="roleids" TYPE="char" NOTNULL="true" SEQUENCE="false" COMMENT="roles to send messages to"/>
                 <FIELD NAME="knockoutdate" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Knockoutdate"/>
-                <FIELD NAME="lock" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="lock for sending mails"/>
                 <FIELD NAME="priority" TYPE="int" LENGTH="3" NOTNULL="true" SEQUENCE="false" COMMENT="priority"/>
                 <FIELD NAME="finished" TYPE="int" LENGTH="1" DEFAULT="0" NOTNULL="true" SEQUENCE="false" COMMENT="finished flag"/>
                 <FIELD NAME="parentid" TYPE="int" LENGTH="10" NOTNULL= "false" SEQUENCE="false" COMMENT="parentid"/>

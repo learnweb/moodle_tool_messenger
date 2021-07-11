@@ -38,12 +38,6 @@ if ($hassiteconfig) { // Needs this condition or there is error on login page.
         \core_user::get_noreply_user()->id
     ));
 
-    $settings->add(new admin_setting_configduration('tool_messenger/lockdownlimit',
-        get_string('locklimit', 'tool_messenger'),
-        '',
-        5 * 60
-    ));
-
     $settings->add(new admin_setting_configduration('tool_messenger/cleanupduration',
         get_string('cleanupduration', 'tool_messenger'),
         '',
