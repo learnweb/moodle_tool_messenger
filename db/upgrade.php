@@ -64,7 +64,7 @@ function xmldb_tool_messenger_upgrade ($oldversion) {
         }
 
         // savepoint reached.
-        upgrade_plugin_savepoint(true, 2021060402, 'tool', 'messenger');
+        upgrade_plugin_savepoint(true, 2021040602, 'tool', 'messenger');
     }
 
     if ($oldversion < 2021040603) {
