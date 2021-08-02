@@ -79,7 +79,7 @@ function xmldb_tool_messenger_upgrade ($oldversion) {
             }
         }
 
-        upgrade_plugin_savepoint(true, 2021060403, 'tool', 'messenger');
+        upgrade_plugin_savepoint(true, 2021040603, 'tool', 'messenger');
     }
 
     if ($oldversion < 2021040610) {
@@ -97,7 +97,7 @@ function xmldb_tool_messenger_upgrade ($oldversion) {
                 $dbman->add_field($table, $item);
             }
         }
-
+        upgrade_plugin_savepoint(true, 2021040610, 'tool', 'messenger');
     }
 
     if ($oldversion < 2021043001) {
@@ -128,7 +128,7 @@ function xmldb_tool_messenger_upgrade ($oldversion) {
                 $dbman->add_field($table, $item);
             }
         }
-
+        upgrade_plugin_savepoint(true, 2021053001, 'tool', 'messenger');
     }
 
     if ($oldversion < 2021070800) {
@@ -137,6 +137,7 @@ function xmldb_tool_messenger_upgrade ($oldversion) {
         if ($dbman->field_exists($table, $field)) {
             $dbman->drop_field($table, $field);
         }
+        upgrade_plugin_savepoint(true, 2021070800, 'tool', 'messenger');
     }
 
     if ($oldversion < 2021072900) {
