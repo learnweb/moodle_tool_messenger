@@ -248,3 +248,4 @@ class tool_messenger_testcase extends advanced_testcase {
         return $DB->get_field('role', 'id', array('shortname' => $role));
     }
 }
+
