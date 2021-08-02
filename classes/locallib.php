@@ -19,6 +19,13 @@ namespace tool_messenger;
 
 class locallib {
 
+    /**
+     * Registers a new job for sending a message to a class of users.
+     * @param $data
+     * @return message_persistent|null
+     * @throws \coding_exception
+     * @throws \core\invalid_persistent_exception
+     */
     public function register_new_job ($data) {
         if ((isset($data->recipients) and count($data->recipients) != 0) or isset($data->followup)) {
 
@@ -61,6 +68,11 @@ class locallib {
         return null;
     }
 
+    /**
+     * Aborts the sending of a message to a class of users
+     * @param $jobid int the id of the job to cancel
+     * @throws \coding_exception
+     */
     public function abort_job ($jobid) {
         $persistent = new \tool_messenger\message_persistent(intval($jobid));
         $persistent->set('finished', 1);

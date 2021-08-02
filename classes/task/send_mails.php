@@ -34,11 +34,6 @@ class send_mails extends \core\task\scheduled_task {
     /**
      * This will start and close surveys.
      */
-    // It's important to note that this might use alot of space
-    // ...if the Plugin data is never deleted. There would be multiple solutions for this.
-    // At the moment manual removal is advised. However since you're here I assume you have some problems...
-    // My personal advice is to either move records that are in the past to another table, so you can still display the dates,
-    // ...or to simply remove a record once the message is send.
     public function execute () {
         $sendmailmanager = new send_manager();
         $sendmailmanager->run_to_cronlimit();

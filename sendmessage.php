@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Settings for the evasys_sync block
+ * Settings for the tool_messenger plugin
  *
- * @package block_evasys_sync
+ * @package tool_messenger
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -39,6 +39,8 @@ if (has_capability('moodle/site:config', context_system::instance())) {
 
     $mform = new tool_messenger\send_message_form();
 
+    $cancel = false;
+    $followuprequest = isset($_POST['followup']);
     if ($data = $mform->get_data()) {
         if (isset($data->abort) && $data->abort > 0) {
             $lib = new \tool_messenger\locallib();
@@ -48,14 +50,21 @@ if (has_capability('moodle/site:config', context_system::instance())) {
             $lib = new \tool_messenger\locallib();
             $lib->register_new_job($data);
         }
+        // When recreating the form without passing the followupparameter moodle will correctly not include a cancelbutton...
+        // however this causes the cleaning function of the form api to ignore the cancelmessagebutton value passed in $_POST.
+        if (isset($_POST['cancelmessagebutton'])) {
+            $followuprequest = false;
+            $cancel = true;
+        }
     }
-
-    $mform = new tool_messenger\send_message_form();
+    $mform = new tool_messenger\send_message_form(null, array('customdata' => array('followuprequest' => $followuprequest, 'cancel' => $cancel)));
 
     $PAGE->requires->js_call_amd('tool_messenger/options', 'init');
     if ($data && $data->followup && $data->followup > 0) {
         $parent = new message_persistent($data->followup);
         $PAGE->requires->js_call_amd('tool_messenger/followup', 'set_correct_parent_date', array($parent->get('knockoutdate')));
+    } else {
+        $PAGE->requires->js_call_amd('tool_messenger/followup', 'set_correct_parent_date', array(strtotime('-1 years', time())));
     }
     $mform->display();
     echo $OUTPUT->footer();

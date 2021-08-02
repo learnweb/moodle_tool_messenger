@@ -25,6 +25,7 @@ class send_manager {
         $progress = $jobdata->get('progress');
         $message = $jobdata->get('message');
         $subject = $jobdata->get('subject');
+        $fails = $jobdata->get('failamount');
         $roleids = explode(",", $jobdata->get('roleids'));
         $knockoutdate = $jobdata->get('knockoutdate');
         $userfrom = \core_user::get_user(get_config('tool_messenger', 'sendinguserid'));
@@ -42,20 +43,23 @@ class send_manager {
         foreach ($userbatch as $userid) {
             $lastprocesseduser = max(intval($userid->userid), $lastprocesseduser);
             $userto = \core_user::get_user($userid->userid);
-            // Why is the return of email_to_user not checked?
+            // Why is there no resend attempt or abort on a failed send?
             // email_to_user returns true if sending was successfull false if not. However it also returns false...
             // if the error is with the users config, for example a deleted user, a user with no email etc.
             // because of this if we'd stop execution on getting a false here we might get stuck on a single invalid...
             // user record.
-            email_to_user($userto, $userfrom, $subject, $message);
+            if (!email_to_user($userto, $userfrom, $subject, $message)) {
+                $fails++;
+            }
         }
         $numofprocessedusers = count($userbatch);
-        if ($limit > $numofprocessedusers && ($parentlimit == -1 or $parent->get('finished'))) {
+        if (($limit == -1 or $limit > $numofprocessedusers) and ($parentlimit == -1 or $parent->get('finished'))) {
             $jobdata->set('finished', 1);
         }
         if ($numofprocessedusers > 0) {
             $jobdata->set('progress', $lastprocesseduser);
             $jobdata->set('senttonum', $jobdata->get('senttonum') + $numofprocessedusers);
+            $jobdata->set('failamount', $fails);
         }
         $jobdata->save();
         return $numofprocessedusers;

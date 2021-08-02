@@ -17,7 +17,7 @@
 /**
  * Tool messenger block admin form.
  *
- * @package block_evasys_sync
+ * @package tool_messenger
  * @copyright 2017 Robin Tschudi
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -37,7 +37,7 @@ class send_message_form extends moodleform {
 
         $mform->addElement('html', '<div id="adminsettings">');
 
-        $followuprequest = isset($_POST["followup"]) and !isset($_POST["sendmessagebutton"]);
+        $followuprequest = $this->_customdata['customdata']['followuprequest'];
         if (!$followuprequest) {
             $mform->addElement('hidden', 'followup', null);
             $mform->setType('followup', PARAM_INT);
@@ -53,7 +53,6 @@ class send_message_form extends moodleform {
         }
         $mform->addElement('hidden', 'abort', null);
         $mform->setType('abort', PARAM_INT);
-        $mform->setType('followupto', PARAM_INT);
 
         $name = 'subject';
         $title = get_string('subject', 'tool_messenger');
@@ -77,8 +76,8 @@ class send_message_form extends moodleform {
         $title = get_string('knockoutenable', 'tool_messenger');
         $mform->addElement('advcheckbox', $name, $title, ' ');
         $default = 1;
-        if ($followuprequest) {
-            $default = $parent->get('knockoutdate') == 0;
+        if ($followuprequest and $parent->get('knockoutdate') == 0) {
+            $default = 0;
             $mform->disabledIf($name, 'followup', 'neq', 0);
         }
         $mform->setDefault($name, $default);
@@ -120,7 +119,12 @@ class send_message_form extends moodleform {
         $mform->setType($name, PARAM_BOOL);
 
         // Add Button.
-        $mform->addElement('submit', 'sendmessagebutton', get_string('sendmessagebutton', 'tool_messenger'));
+        $buttonarray = array();
+        if ($followuprequest) {
+            $buttonarray[] =& $mform->createElement('submit', 'cancelmessagebutton', get_string('cancelfollowup', 'tool_messenger'));
+        }
+        $buttonarray[] =& $mform->createElement('submit', 'sendmessagebutton', get_string('sendmessagebutton', 'tool_messenger'));
+        $mform->addGroup($buttonarray, 'buttonar', '', array(' '), false);
 
         // Add Table.
         $mform->addElement('html', $this->tablehead());
@@ -218,14 +222,18 @@ class send_message_form extends moodleform {
             $mform->addElement('html', '<td class="cell c3"><div class="tablewrap">' .
                  $to .
                 '</div></td>');
+            $lastlogin = $record->get('knockoutdate');
+            $lastlogintext = $lastlogin == 0 ? get_string('nolastlogin', 'tool_messenger') : date('d M Y', $lastlogin);
             $mform->addElement('html', '<td class="cell c4"><div class="tablewrap">' .
-                date('d M Y', $record->get('knockoutdate')) .
+                 $lastlogintext .
                 '</div></td>');
             $progressstring = $record->get('senttonum') . " / " . $record->get("totalnumofusers");
             $statusstring = $record->get('finished') ? $record->get('aborted') ? 'statusaborted' : 'statusfinished'
                 : 'statussending';
+            $failstring = '<br><span class="small text-muted">' . $record->get('failamount') . ' fails</span>';
             $mform->addElement('html', '<td class="cell c5"><div>' .
                 "<span class='$statusstring'>$progressstring</span>" .
+                $failstring .
                 '</div></td>');
             $mform->addElement('html', '<td class="cell c6"><div>' .
                 ($record->get("priority") + 1) .

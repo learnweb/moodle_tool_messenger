@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This file keeps track of upgrades to the evasys_sync block
+ * This file keeps track of upgrades to the tool_messenger plugin
  *
  * Sometimes, changes between versions involve alterations to database
  * structures and other major things that may break installations. The upgrade
@@ -24,14 +24,14 @@
  * it cannot do itself, it will tell you what you need to do.  The commands in
  * here will all be database-neutral, using the functions defined in DLL libraries.
  *
- * @package   blocks_evasys_sync
+ * @package   tool_messenger
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Execute evasys_sync upgrade from the given old version
+ * Execute tool_messenger upgrade from the given old version
  *
  * @param int $oldversion
  * @return bool
@@ -137,6 +137,19 @@ function xmldb_tool_messenger_upgrade ($oldversion) {
         if ($dbman->field_exists($table, $field)) {
             $dbman->drop_field($table, $field);
         }
+    }
+
+    if ($oldversion < 2021072900) {
+        $table = new xmldb_table('tool_messenger_messagejobs');
+
+        $table->add_field('failamount', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, 0);
+        foreach ($table->getFields() as $item) {
+            if (!$dbman->field_exists($table, $item)) {
+                $dbman->add_field($table, $item);
+            }
+        }
+
+        upgrade_plugin_savepoint(true, 2021072900, 'tool', 'messenger');
     }
 
     return true;

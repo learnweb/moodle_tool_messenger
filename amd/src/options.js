@@ -1,5 +1,12 @@
-define(['jquery', 'core/modal_factory', 'core/url'], function ($, modalfactory, url) {
+define(['jquery', 'core/modal_factory', 'core/url', 'core/ajax'], function ($, modalfactory, url, ajax) {
 
+    /**
+     * Returns a function that will append a supplied form with a key: value pair
+     * @param formid the forms id
+     * @param name the key name
+     * @param value the value
+     * @returns {(function(): void)}
+     */
     var append = function(formid, name, value) {
         return function() {
             $("<input />").attr("type", "hidden")
@@ -9,48 +16,54 @@ define(['jquery', 'core/modal_factory', 'core/url'], function ($, modalfactory, 
         };
     };
 
+    /**
+     * Shows the message that was sent with a tool_messenge instance.
+     * the message id has to be supplied by the events current target through its messageid attribute.
+     * @param event
+     */
     var show_message = function (event) {
         event.preventDefault();
         var button = event.currentTarget;
         var id = button.getAttribute("messageid");
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function () {
-            if (this.readyState === 4 && this.status === 200) {
-                var data = JSON.parse(this.responseText);
-                modalfactory.create({
-                    type: modalfactory.types.ALERT,
-                    title: data.subject,
-                    body: data.message
-                }).then(function (modal) {
-                    modal.show();
-                });
-            }
-        };
-        var s = url.relativeUrl("/admin/tool/messenger/get_message_ajax.php", {'id': id}, true);
-        xhttp.open("GET", s);
-        xhttp.send();
+        ajax.call([
+            {methodname: 'tool_messenger_get_message', args: {'id': id}}
+        ])[0].done(function (response) {
+            var data = JSON.parse(response);
+            modalfactory.create({
+                type: modalfactory.types.ALERT,
+                title: data.subject,
+                body: data.message
+            }).then(function (modal) {
+                modal.show();
+            });
+        }).fail(function (ex) {
+            window.console.log('fetch message failed: ');
+            window.console.log(ex);
+        });
     };
 
     var initialize_showmessage_buttons = function () {
         $('button.showmessagebutton').each(function(i, x) {
             $(x).on('click', show_message);
-            return true;
+            return true; // Makes this a foreach loop.
         });
     };
 
     var init_predicitonlink = function () {
+
         $('#predictiontrigger').click(function (event) {
             event.preventDefault();
-            var s;
             var parent = $('#id_followup');
+            var params;
             if (parent.length > 0) {
-                s = url.relativeUrl("/admin/tool/messenger/predict_affected_users_ajax.php",
-                    {'parentid': parent.val()}, true);
+                params = {'parentid': parent.val()};
             } else {
+                // Get roles.
                 var roles = [];
                 $('#id_recipients').children(':selected').each(function (i, x) {
                     roles.push(x.value);
                 });
+                // Get time.
                 var unix;
                 if ($('#id_knockout_enable').prop('checked')) {
                     var day = $('#id_knockout_date_day').val();
@@ -60,34 +73,45 @@ define(['jquery', 'core/modal_factory', 'core/url'], function ($, modalfactory, 
                 } else {
                     unix = -1;
                 }
-                s = url.relativeUrl("/admin/tool/messenger/predict_affected_users_ajax.php",
-                    {'roles': roles.join(","), 'knockoutdate': unix}, true);
+                // Build url.
+                params = {'roles': roles.join(","), 'knockoutdate': unix};
             }
-            var xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function () {
-                if (this.readyState === 4 && this.status === 200) {
-                    $('#predictionbox').text(this.responseText);
-                }
-            };
-            xhttp.open("GET", s);
-            xhttp.send();
+            ajax.call([
+                {methodname: 'tool_messenger_predict_users', args: params}
+            ])[0].done(function (response) {
+                $('#predictionbox').text(response);
+            }).fail(function (ex) {
+                window.console.log('fetch predicted users failed: ');
+                window.console.log(ex);
+            });
+        });
+    };
+
+    /**
+     * This function removes all hidden followup and abort fields and attaches a listener to the abort
+     * and followup buttons that will add them as followup:id or abort:id in the form on click.
+     * This is done to enable the use of the abort and followup button while using mform->data which would be sanitized
+     * otherwise. It also ensures that "abort" or "followup" will not be saved across instances of this form as to stop
+     * accidental resending of this formdata.
+     */
+    var sanitize_form = function () {
+        $('input[name=abort][type=hidden]').each(function (i, x) {
+            x.remove();
+        });
+        $('input[name=followup][type=hidden]').each(function (i, x) {
+            x.remove();
+        });
+        $('td > input').each(function (i, input) {
+            var button = $(input);
+            var [name, value] = input["id"].split('_');
+            button.on('click', append($('form.mform')[0].id, name, value));
+            return true;
         });
     };
 
     var init = function() {
         $(document).ready(function() {
-            $('input[name=abort][type=hidden]').each(function (i, x) {
-                x.remove();
-            });
-            $('input[name=followup][type=hidden]').each(function (i, x) {
-                x.remove();
-            });
-            $('td > input').each(function (i, input) {
-                var button = $(input);
-                var [name, value] = input["id"].split('_');
-                button.on('click', append($('form.mform')[0].id, name, value));
-                return true;
-            });
+            sanitize_form();
             initialize_showmessage_buttons();
             init_predicitonlink();
         });

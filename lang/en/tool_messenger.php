@@ -52,6 +52,8 @@ $string['noprediction'] = "Prediction not run yet";
 $string['prediction_about'] = "About ";
 $string['prediction_sent'] = " e-mails will be sent";
 $string['knockoutdatetable'] = "latest login before";
+$string['nolastlogin'] = 'no restriction';
+$string['cancelfollowup'] = 'Cancel followup';
 
 $string['sendmessage_section'] = "Send message";
 $string['general_config_header'] = "General Settings";
@@ -71,4 +73,5 @@ $string['invalidsenttonum'] = 'Supplied invalid to number';
 $string['invalidaborted'] = 'Supplied invalid aborted flag';
 $string['invalidnumoftotalusers'] = 'Supplied invalid amount of total users';
 $string['invalidnumofusers'] = 'Supplied invalid amount of users';
+$string['invalidfailamount'] = 'Supplied amount of fails is invalid';
 

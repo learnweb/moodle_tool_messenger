@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Class for loading/storing course-date pairs in the DB.
+ * Class for loading/storing messages for the tool_messenger plugin
  *
- * @package block_evasys_sync
- * @copyright 2019 Robin Tschudi
+ * @package tool_messagejobs
+ * @copyright 2021 Robin Tschudi
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace tool_messenger;
@@ -83,6 +83,11 @@ class message_persistent extends persistent{
                 'type' => PARAM_INT,
                 'message' => new \lang_string('invalidnumofusers', 'tool_messenger')
             ),
+            'failamount' => array (
+                'type' => PARAM_INT,
+                'message' => new \lang_string('invalidfailamount', 'tool_messenger'),
+                'default' => 0
+            )
         );
     }
 

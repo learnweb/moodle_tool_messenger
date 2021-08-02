@@ -24,6 +24,10 @@ class cleanup_jobs extends scheduled_task {
         return get_string('cleanupjobstask', 'tool_messenger');
     }
 
+    /**
+     * Deletes all jobs that are older than the saveperiod supplied in the plugins config.
+     * @throws \dml_exception
+     */
     public function execute() {
         global $DB;
         $time = time();

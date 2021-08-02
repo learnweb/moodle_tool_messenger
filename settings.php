@@ -1,5 +1,5 @@
 <?php
-// This file is part of the Moodle plugin block_evasys_sync
+// This file is part of the Moodle plugin tool_messenger
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by

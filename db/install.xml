@@ -22,6 +22,7 @@
                 <FIELD NAME="senttonum" SEQUENCE="false" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" COMMENT="num of users message was sent to"/>
                 <FIELD NAME="aborted" SEQUENCE="false" TYPE="int" NOTNULL="true" LENGTH="1" DEFAULT="0"/>
                 <FIELD NAME="totalnumofusers" SEQUENCE="false" TYPE="int" NOTNULL="true" DEFAULT="0" LENGTH="10"/>
+                <FIELD NAME="failamount" SEQUENCE="false" TYPE="int" NOTNULL="true" DEFAULT="0" LENGTH="10"/>
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
