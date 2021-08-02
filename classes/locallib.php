@@ -16,12 +16,14 @@
 
 namespace tool_messenger;
 
-
+/**
+ * Local functions for tool_messenger plugin
+ */
 class locallib {
 
     /**
      * Registers a new job for sending a message to a class of users.
-     * @param $data
+     * @param $data object|array
      * @return message_persistent|null
      * @throws \coding_exception
      * @throws \core\invalid_persistent_exception

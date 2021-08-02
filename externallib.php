@@ -17,7 +17,15 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once("$CFG->libdir/externallib.php");
 
+/**
+ * name of the plugin...
+ */
 const PLUGINNAME = 'tool_messenger';
+
+/**
+ * external api for ajax calls
+ * @package tool_messenger
+ */
 class tool_messenger_external extends external_api {
 
     /**
@@ -44,9 +52,9 @@ class tool_messenger_external extends external_api {
 
     /**
      * Returns a prediction to display for the user
-     * @param $parentid
-     * @param $knockoutdate
-     * @param $roles
+     * @param $parentid int
+     * @param $knockoutdate int
+     * @param $roles string
      * @return lang_string|string
      * @throws coding_exception
      */
@@ -88,7 +96,7 @@ class tool_messenger_external extends external_api {
 
     /**
      * Returns a the message as json object
-     * @param $id
+     * @param $id int
      * @return string
      * @throws coding_exception
      */

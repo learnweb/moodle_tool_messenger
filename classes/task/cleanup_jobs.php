@@ -18,6 +18,9 @@ namespace tool_messenger\task;
 
 use core\task\scheduled_task;
 
+/**
+ * Taskclass for cleaning up jobs
+ */
 class cleanup_jobs extends scheduled_task {
 
     public function get_name() {

@@ -15,10 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Settings for the tool_messenger plugin
+ * Sendmessage setting site for the tool_messenger Plugin
  *
  * @package tool_messenger
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright Robin Tschudi 2021
  */
 
 use tool_messenger\message_persistent;

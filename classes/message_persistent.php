@@ -14,6 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace tool_messenger;
+use core\persistent;
+
+defined('MOODLE_INTERNAL') || die;
+
 /**
  * Class for loading/storing messages for the tool_messenger plugin
  *
@@ -21,11 +26,6 @@
  * @copyright 2021 Robin Tschudi
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace tool_messenger;
-use core\persistent;
-
-defined('MOODLE_INTERNAL') || die;
-
 class message_persistent extends persistent{
     const TABLE = 'tool_messenger_messagejobs';
 
