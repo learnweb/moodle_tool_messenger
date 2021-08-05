@@ -126,10 +126,6 @@ class send_message_form extends moodleform {
         $buttonarray[] =& $mform->createElement('submit', 'sendmessagebutton', get_string('sendmessagebutton', 'tool_messenger'));
         $mform->addGroup($buttonarray, 'buttonar', '', array(' '), false);
 
-        // Add Table.
-        $mform->addElement('html', $this->tablehead());
-        $this->table_body();
-
         $mform->addElement('html', '</div>');
     }
 
@@ -138,12 +134,19 @@ class send_message_form extends moodleform {
         return $DB->get_records_sql_menu('SELECT id, shortname FROM {role}');
     }
 
+    public function print_table() {
+        // Add Table.
+        $this->tablehead();
+        $this->table_body();
+    }
+
 
     /**
      * Prints the table head (e.g. column names).
      * @return string
      */
     public function tablehead() {
+        $mform = $this->_form;
         $attributes['class'] = 'generaltable tool_messenger';
         $attributes['id'] = 'course_category_table';
         $output = html_writer::start_tag('table', $attributes);
@@ -186,7 +189,7 @@ class send_message_form extends moodleform {
         $output .= html_writer::end_tag('tr');
         $output .= html_writer::end_tag('thead');
 
-        return $output;
+        $mform->addElement('html', $output);
     }
 
     /**

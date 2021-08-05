@@ -30,7 +30,7 @@ require_once($CFG->dirroot . '/course/lib.php');
 require_login();
 
 // Set the URL that should be used to return to this page.
-$PAGE->set_url('/tool/messenger/sendmessenger');
+$PAGE->set_url('/tool/messenger/sendmessage');
 $PAGE->set_context(context_system::instance());
 
 if (has_capability('moodle/site:config', context_system::instance())) {
@@ -38,10 +38,13 @@ if (has_capability('moodle/site:config', context_system::instance())) {
     echo $OUTPUT->header();
     echo $OUTPUT->heading(get_string('settings', 'tool_messenger'));
 
-    $mform = new tool_messenger\send_message_form();
-
-    $cancel = false;
     $followuprequest = isset($_POST['followup']);
+    if (isset($_POST['cancelmessagebutton'])) {
+        $followuprequest = false;
+    }
+
+    $mform = new tool_messenger\send_message_form(null, array('customdata' => array('followuprequest' => $followuprequest)));
+
     if ($data = $mform->get_data()) {
         if (isset($data->abort) && $data->abort > 0) {
             $lib = new \tool_messenger\locallib();
@@ -51,17 +54,12 @@ if (has_capability('moodle/site:config', context_system::instance())) {
             $lib = new \tool_messenger\locallib();
             $lib->register_new_job($data);
         }
-        // When recreating the form without passing the followupparameter moodle will correctly not include a cancelbutton...
-        // however this causes the cleaning function of the form api to ignore the cancelmessagebutton value passed in $_POST.
-        if (isset($_POST['cancelmessagebutton'])) {
-            $followuprequest = false;
-            $cancel = true;
-        }
     }
-    $mform = new tool_messenger\send_message_form(null, array('customdata' => array('followuprequest' => $followuprequest, 'cancel' => $cancel)));
+
+    $mform->print_table();
 
     $PAGE->requires->js_call_amd('tool_messenger/options', 'init');
-    if ($data && $data->followup && $data->followup > 0) {
+    if ($followuprequest) {
         $parent = new message_persistent($data->followup);
         $PAGE->requires->js_call_amd('tool_messenger/followup', 'set_correct_parent_date', array($parent->get('knockoutdate')));
     } else {

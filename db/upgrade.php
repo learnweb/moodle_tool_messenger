@@ -153,5 +153,13 @@ function xmldb_tool_messenger_upgrade ($oldversion) {
         upgrade_plugin_savepoint(true, 2021072900, 'tool', 'messenger');
     }
 
+    if ($oldversion < 2021080500) {
+        $table = new xmldb_table('tool_messenger_messagejobs');
+        $field = new xmldb_field('progress', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $dbman->change_field_precision($table, $field);
+
+        upgrade_plugin_savepoint(true, 2021080500, 'tool', 'messenger');
+    }
+
     return true;
 }
