@@ -15,16 +15,19 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin version and other meta-data are defined here.
- *
- * @package     tool_messenger
- * @copyright   2021 Robin Tschudi
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * Capability definitions for the tool_messenger plugin
+ * @package    tool_messenger
+ * @copyright  2021 Robin Tschudi
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'tool_messenger';
-$plugin->version = 2021081008;
-$plugin->requires = 2017051500;
-$plugin->maturity = MATURITY_ALPHA;
+$capabilities = array(
+    'tool/messenger:sendmessages' => array(
+        'riskbitmap' => RISK_XSS, RISK_SPAM, RISK_CONFIG,
+        'contextlevel' => CONTEXT_SYSTEM,
+        'captype' => 'write',
+        'archetypes' => array(
+        )
+    ),
+);

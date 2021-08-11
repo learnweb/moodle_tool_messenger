@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+$string['messenger:sendmessages'] = "Send messges and popups to all users";
 $string['pluginname'] = "Admin messenger";
 $string['tool_messenger'] = "Admin messenger";
 $string['sendmailstask'] = "Send mails task for the admin messenger plugin";

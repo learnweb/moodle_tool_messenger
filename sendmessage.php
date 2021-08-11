@@ -33,7 +33,7 @@ require_login();
 $PAGE->set_url('/tool/messenger/sendmessage');
 $PAGE->set_context(context_system::instance());
 
-if (has_capability('moodle/site:config', context_system::instance())) {
+if (has_capability('tool/messenger:sendmessages', context_system::instance())) {
     global $DB;
     echo $OUTPUT->header();
     echo $OUTPUT->heading(get_string('settings', 'tool_messenger'));

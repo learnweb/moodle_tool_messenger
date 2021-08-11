@@ -18,7 +18,7 @@ defined('MOODLE_INTERNAL') || die();
 $services = array (
     'tool_messenger_fetchlazydata' => array (
         'functions' => array('tool_messenger_predict_users', 'tool_messenger_get_message'),
-        'requirecapability' => 'moodle/site:config',
+        'requirecapability' => 'moodle/tool_messenger:sendmessages',
         'restricteduseres' => 0,
         'enabled' => 1,
         'downloadfiles' => 0,
@@ -33,7 +33,7 @@ $functions = array (
         'description' => 'predicts users that are being sent a message',
         'type' => 'read',
         'ajax' => 'true',
-        'capabilities' => 'moodle/site:config'
+        'capabilities' => 'moodle/tool_messenger:sendmessages'
     ),
     'tool_messenger_get_message' => array (
         'classname' => 'tool_messenger_external',
@@ -42,7 +42,7 @@ $functions = array (
         'description' => 'gets a message from a job',
         'type' => 'read',
         'ajax' => 'true',
-        'capabilities' => 'moodle/site:config'
+        'capabilities' => 'moodle/tool_messenger:sendmessages'
     ),
     'tool_messenger_get_popups_for_user' => array (
         'classname' => 'tool_messenger_external',

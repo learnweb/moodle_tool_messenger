@@ -55,6 +55,7 @@ class send_message_form extends moodleform {
         $mform->setType('abort', PARAM_INT);
 
         $mform->addElement('hidden', 'abortpopup', null);
+        $mform->setType('abortpopup', PARAM_INT);
 
         $name = 'subject';
         $title = get_string('subject', 'tool_messenger');
