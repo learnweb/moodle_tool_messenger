@@ -25,6 +25,6 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'tool_messenger';
-$plugin->version = 2021080500;
+$plugin->version = 2021081005;
 $plugin->requires = 2017051500;
 $plugin->maturity = MATURITY_ALPHA;

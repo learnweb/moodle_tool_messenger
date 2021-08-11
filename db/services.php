@@ -43,5 +43,23 @@ $functions = array (
         'type' => 'read',
         'ajax' => 'true',
         'capabilities' => 'moodle/site:config'
+    ),
+    'tool_messenger_get_popups_for_user' => array (
+        'classname' => 'tool_messenger_external',
+        'methodname' => 'get_popups_for_user',
+        'classpath' => 'admin/tool/messenger/externallib.php',
+        'description' => 'Gets popups for user',
+        'type' => 'read',
+        'ajax' => 'true',
+        'capabilities' => ''
+    ),
+    'tool_messenger_set_lastpopupid_for_user' => array (
+        'classname' => 'tool_messenger_external',
+        'methodname' => 'set_lastpopupid_for_user',
+        'classpath' => 'admin/tool/messenger/externallib.php',
+        'description' => 'set lastpopupid for user',
+        'type' => 'write',
+        'ajax' => 'true',
+        'capabilities' => ''
     )
 );

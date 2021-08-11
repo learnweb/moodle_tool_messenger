@@ -28,5 +28,29 @@
                 <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
             </KEYS>
         </TABLE>
+        <TABLE NAME="tool_messenger_popups" COMMENT="Table containing all popups">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" COMMENT="id of the request"/>
+                <FIELD NAME="usermodified" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+                <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+                <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+                <FIELD NAME="message" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="message"/>
+                <FIELD NAME="header" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="header"/>
+                <FIELD NAME="roleids" TYPE="char" NOTNULL="true" SEQUENCE="false" COMMENT="roles to display popups to"/>
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+            </KEYS>
+        </TABLE>
+        <TABLE NAME="tool_messenger_popuptracking" COMMENT="tracking moodle user progress">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" COMMENT="id of the db entry"/>
+                <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="moodleuserid"/>
+                <FIELD NAME="lastpopup" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="id of the last popup checked"/>
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+            </KEYS>
+        </TABLE>
     </TABLES>
 </XMLDB>

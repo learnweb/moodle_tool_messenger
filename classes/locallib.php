@@ -21,6 +21,18 @@ namespace tool_messenger;
  */
 class locallib {
 
+    private function get_roleids($data) {
+        $roleids = implode(",", $data->recipients);
+        if (isset($data->followup) && $data->followup != 0) {
+            $record->parentid = $data->followup;
+            $parent = new \tool_messenger\message_persistent(intval($data->followup));
+            $parentid = $parent->get("id");
+            $knockoutdate = $parent->get('knockoutdate');
+            $roleids = $parent->get('roleids');
+        }
+        return $roleids;
+    }
+
     /**
      * Registers a new job for sending a message to a class of users.
      * @param $data object|array
@@ -39,14 +51,7 @@ class locallib {
             }
 
             $parentid = null;
-            $roleids = implode(",", $data->recipients);
-            if (isset($data->followup) && $data->followup != 0) {
-                $record->parentid = $data->followup;
-                $parent = new \tool_messenger\message_persistent(intval($data->followup));
-                $parentid = $parent->get("id");
-                $knockoutdate = $parent->get('knockoutdate');
-                $roleids = $parent->get('roleids');
-            }
+            $roleids = $this->get_roleids($data);
 
             $record->message = $data->message['text'];
             $record->subject = $data->subject;
@@ -71,6 +76,20 @@ class locallib {
     }
 
     /**
+     *
+     */
+    public function register_popup($data) {
+        if ((isset($data->recipients) and count($data->recipients) != 0) or isset($data->followup)) {
+            $record = new \stdClass();
+            $record->header = $data->popupheader;
+            $record->message = $data->message['text'];
+            $record->roleids = $this->get_roleids($data);
+            $persistent = new \tool_messenger\popup_persistent(0, $record);
+            $persistent->create();
+        }
+    }
+
+    /**
      * Aborts the sending of a message to a class of users
      * @param $jobid int the id of the job to cancel
      * @throws \coding_exception
@@ -80,6 +99,11 @@ class locallib {
         $persistent->set('finished', 1);
         $persistent->set('aborted', 1);
         $persistent->save();
+    }
+
+    public static function track_user_popups ($userid) {
+        global $DB;
+        $DB->execute("INSERT INTO {tool_messenger_popuptracking} (userid, lastpopup) VALUES($userid, 0)");
     }
 
 }

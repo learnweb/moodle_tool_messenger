@@ -161,5 +161,44 @@ function xmldb_tool_messenger_upgrade ($oldversion) {
         upgrade_plugin_savepoint(true, 2021080500, 'tool', 'messenger');
     }
 
+    if ($oldversion < 2021081000) {
+        $table = new xmldb_table('tool_messenger_popups');
+
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('usermodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('message', XMLDB_TYPE_TEXT, null, null, XMLDB_NOTNULL, null, null);
+        $table->add_field('header', XMLDB_TYPE_TEXT, null, null, XMLDB_NOTNULL, null, null);
+        $table->add_field('roleids', XMLDB_TYPE_TEXT, null, null, XMLDB_NOTNULL, null);
+
+        // Adding keys to table.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+
+        // Conditionally launch create table.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        upgrade_plugin_savepoint(true, 2021081000, 'tool', 'messenger');
+    }
+
+    if ($oldversion < 2021081003) {
+        $table = new xmldb_table('tool_messenger_popuptracking');
+
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('lastpopup', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        // Adding keys to table.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+
+        // Conditionally launch create table.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        upgrade_plugin_savepoint(true, 2021081003, 'tool', 'messenger');
+    }
+
     return true;
 }

@@ -108,4 +108,62 @@ class tool_messenger_external extends external_api {
 
         return json_encode(array('message' => $message, 'subject' => $subject));
     }
+
+    /**
+     * Returns description of method parameters
+     * @return external_function_parameters
+     */
+    public static function get_popups_for_user_parameters() {
+        return new external_function_parameters(array());
+    }
+
+    /**
+     * Returns description of method parameters
+     * @return \external_value
+     */
+    public static function get_popups_for_user_returns() {
+        return new \external_value(PARAM_RAW, 'json response');
+    }
+
+    public static function get_popups_for_user () {
+        global $USER, $DB;
+        $userid = intval($USER->id);
+        $roleids = $DB->get_fieldset_sql("SELECT DISTINCT roleid FROM {role_assignments} WHERE userid=" . $userid);
+        $lastpopupid = $DB->get_field('tool_messenger_popuptracking', 'lastpopup', array('userid' => $userid));
+
+        if ($lastpopupid === false) {
+            \tool_messenger\locallib::track_user_popups($userid);
+            $lastpopupid = 0;
+        }
+
+        $popups = \tool_messenger\popup_persistent::get_popups_for_role_since($roleids, $lastpopupid);
+        $cleanedpopups = array_map(function($data) {
+            return ['id' => $data->get('id'), 'header' => $data->get('header'), 'message' => $data->get('message')];
+        }, $popups);
+        return json_encode($cleanedpopups);
+    }
+
+    /**
+     * Returns description of method parameters
+     * @return external_function_parameters
+     */
+    public static function set_lastpopupid_for_user_parameters() {
+        return new external_function_parameters(array(
+            'lastpopupid' => new external_value(PARAM_INT, 'lastpopupid', VALUE_REQUIRED),
+        ));
+    }
+
+    /**
+     * Returns description of method parameters
+     * @return \external_value
+     */
+    public static function set_lastpopupid_for_user_returns() {
+        return null;
+    }
+
+    public static function set_lastpopupid_for_user ($lastpopupid) {
+        global $USER, $DB;
+        $userid = intval($USER->id);
+        $DB->set_field('tool_messenger_popuptracking', 'lastpopup', $lastpopupid, array('userid' => $userid));
+    }
 }

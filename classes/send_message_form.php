@@ -58,6 +58,13 @@ class send_message_form extends moodleform {
         $title = get_string('subject', 'tool_messenger');
         $mform->addElement('textarea', $name, $title, 'wrap="virtual" rows="1" cols="100"');
         $mform->setType($name, PARAM_TEXT);
+        $mform->disabledIf($name, 'type', 'eq', '2');
+
+        $name = 'popupheader';
+        $title = get_string('popupheader', 'tool_messenger');
+        $mform->addElement('textarea', $name, $title, 'wrap="virtual" rows="1" cols="100"');
+        $mform->setType($name, PARAM_TEXT);
+        $mform->disabledIf($name, 'type', 'eq', '0');
 
         $name = 'message';
         $title = get_string('message', 'tool_messenger');
@@ -81,6 +88,7 @@ class send_message_form extends moodleform {
             $mform->disabledIf($name, 'followup', 'neq', 0);
         }
         $mform->setDefault($name, $default);
+        $mform->disabledIf($name, 'type', 'eq', 2);
 
         $name = 'knockout_date';
         $title = get_string ('knockoutdate', 'tool_messenger');
@@ -99,6 +107,7 @@ class send_message_form extends moodleform {
             $mform->setDefault($name, $timestamp);
             $mform->disabledIf($name, 'knockout_enable');
         }
+        $mform->disabledIf($name, 'type', 'eq', 2);
 
         $name = 'predictionlink';
         $title = get_string($name, 'tool_messenger');
@@ -112,11 +121,17 @@ class send_message_form extends moodleform {
         $title = get_string('priority', 'tool_messenger');
         $mform->addElement('select', $name, $title, [1, 2, 3, 4, 5]);
         $mform->addHelpButton($name, $name, 'tool_messenger');
+        $mform->disabledIf($name, 'type', 'eq', 2);
 
         $name = 'directsend';
         $title = get_string('directsend', 'tool_messenger');
         $mform->addElement('advcheckbox', $name, $title, ' ');
         $mform->setType($name, PARAM_BOOL);
+        $mform->disabledIf($name, 'type', 'eq', 2);
+
+        $name = 'type';
+        $title = get_string('type', 'tool_messenger');
+        $mform->addElement('select', $name, $title, array(0 => 'e-mail', 2 => 'popup', 1 => 'e-mail and popup'));
 
         // Add Button.
         $buttonarray = array();

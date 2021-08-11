@@ -54,6 +54,8 @@ $string['prediction_sent'] = " e-mails will be sent";
 $string['knockoutdatetable'] = "latest login before";
 $string['nolastlogin'] = 'no restriction';
 $string['cancelfollowup'] = 'Cancel followup';
+$string['popupheader'] = 'Popupheader';
+$string['type'] = 'Type';
 
 $string['sendmessage_section'] = "Send message";
 $string['general_config_header'] = "General Settings";

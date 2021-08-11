@@ -52,7 +52,12 @@ if (has_capability('moodle/site:config', context_system::instance())) {
         }
         if (isset($data->sendmessagebutton)) {
             $lib = new \tool_messenger\locallib();
-            $lib->register_new_job($data);
+            if ($data->type <= 1) {
+                $lib->register_new_job($data);
+            }
+            if ($data->type >= 1) {
+                $lib->register_popup($data);
+            }
         }
     }
 
