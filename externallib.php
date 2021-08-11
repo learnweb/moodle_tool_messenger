@@ -82,6 +82,7 @@ class tool_messenger_external extends external_api {
         return new external_function_parameters(
             array(
                 'id' => new external_value(PARAM_INT, 'id', VALUE_REQUIRED),
+                'type' => new external_value(PARAM_TEXT, 'type', VALUE_REQUIRED),
             )
         );
     }
@@ -100,11 +101,12 @@ class tool_messenger_external extends external_api {
      * @return string
      * @throws coding_exception
      */
-    public static function get_message($id) {
+    public static function get_message($id, $type) {
         global $DB;
-
-        $message = $DB->get_field(\tool_messenger\message_persistent::TABLE, 'message', array('id' => $id));
-        $subject = $DB->get_field(\tool_messenger\message_persistent::TABLE, 'subject', array('id' => $id));
+        $table = $type == 'email' ? \tool_messenger\message_persistent::TABLE : \tool_messenger\popup_persistent::TABLE;
+        $header = $type == 'email' ? 'subject' : 'header';
+        $message = $DB->get_field($table, 'message', array('id' => $id));
+        $subject = $DB->get_field($table, $header, array('id' => $id));
 
         return json_encode(array('message' => $message, 'subject' => $subject));
     }

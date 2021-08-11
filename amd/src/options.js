@@ -25,8 +25,9 @@ define(['jquery', 'core/modal_factory', 'core/url', 'core/ajax'], function ($, m
         event.preventDefault();
         var button = event.currentTarget;
         var id = button.getAttribute("messageid");
+        var type = button.getAttribute('type');
         ajax.call([
-            {methodname: 'tool_messenger_get_message', args: {'id': id}}
+            {methodname: 'tool_messenger_get_message', args: {'id': id, 'type': type}}
         ])[0].done(function (response) {
             var data = JSON.parse(response);
             modalfactory.create({
@@ -96,6 +97,9 @@ define(['jquery', 'core/modal_factory', 'core/url', 'core/ajax'], function ($, m
      */
     var sanitize_form = function () {
         $('input[name=abort][type=hidden]').each(function (i, x) {
+            x.remove();
+        });
+        $('input[name=abortpopup][type=hidden]').each(function (i, x) {
             x.remove();
         });
         $('input[name=followup][type=hidden]').each(function (i, x) {

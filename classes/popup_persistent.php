@@ -26,7 +26,7 @@ class popup_persistent extends persistent {
             'header' => array(
                 'type' => PARAM_RAW,
                 'required' => true,
-                'message' => new \lang_string('invalidmessage', 'tool_messenger')
+                'message' => new \lang_string('invalidheader', 'tool_messenger')
             ),
             'message' => array(
                 'type' => PARAM_RAW,
@@ -36,13 +36,17 @@ class popup_persistent extends persistent {
             'roleids' => array (
                 'type' => PARAM_TEXT,
                 'message' => new \lang_string('invalidroleids', 'tool_messenger')
+            ),
+            'enddate' => array(
+                'type' => PARAM_INT,
+                'message' => new \lang_string('invalidenddate', 'tool_messenger')
             )
         );
     }
 
     public static function get_popups_for_role_since($roleids, $lastid) {
         global $DB;
-        $recordset = $DB->get_recordset_sql('SELECT * FROM {' . self::TABLE . '} WHERE id>' . $lastid);
+        $recordset = $DB->get_recordset_sql('SELECT * FROM {' . self::TABLE . '} WHERE id>' . $lastid . ' AND enddate>' . time());
         $popups = [];
         foreach ($recordset as $record) {
             if (count(array_intersect(explode(',', $record->roleids), $roleids)) > 0) {

@@ -200,5 +200,18 @@ function xmldb_tool_messenger_upgrade ($oldversion) {
         upgrade_plugin_savepoint(true, 2021081003, 'tool', 'messenger');
     }
 
+    if ($oldversion < 2021081006) {
+        $table = new xmldb_table('tool_messenger_popups');
+
+        $table->add_field('enddate', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, 0);
+
+        foreach ($table->getFields() as $item) {
+            if (!$dbman->field_exists($table, $item)) {
+                $dbman->add_field($table, $item);
+            }
+        }
+        upgrade_plugin_savepoint(true, 2021081006, 'tool', 'messenger');
+    }
+
     return true;
 }

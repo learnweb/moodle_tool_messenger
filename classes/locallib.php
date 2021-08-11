@@ -84,9 +84,16 @@ class locallib {
             $record->header = $data->popupheader;
             $record->message = $data->message['text'];
             $record->roleids = $this->get_roleids($data);
+            $record->enddate = $data->popup_enddate;
             $persistent = new \tool_messenger\popup_persistent(0, $record);
             $persistent->create();
         }
+    }
+
+    public function abort_popup ($popupid) {
+        $persistent = new \tool_messenger\popup_persistent(intval($popupid));
+        $persistent->set('enddate', 0);
+        $persistent->save();
     }
 
     /**

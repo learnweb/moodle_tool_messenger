@@ -46,6 +46,10 @@ if (has_capability('moodle/site:config', context_system::instance())) {
     $mform = new tool_messenger\send_message_form(null, array('customdata' => array('followuprequest' => $followuprequest)));
 
     if ($data = $mform->get_data()) {
+        if (isset($data->abortpopup) && $data->abortpopup > 0) {
+            $lib = new \tool_messenger\locallib();
+            $lib->abort_popup($data->abortpopup);
+        }
         if (isset($data->abort) && $data->abort > 0) {
             $lib = new \tool_messenger\locallib();
             $lib->abort_job($data->abort);

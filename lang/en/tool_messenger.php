@@ -51,12 +51,17 @@ $string['predicitonlinktext'] = 'run prediction';
 $string['noprediction'] = "Prediction not run yet";
 $string['prediction_about'] = "About ";
 $string['prediction_sent'] = " e-mails will be sent";
-$string['knockoutdatetable'] = "latest login before";
+$string['knockoutdatetable'] = "latest login before /<br>Popup termination date";
 $string['nolastlogin'] = 'no restriction';
 $string['cancelfollowup'] = 'Cancel followup';
 $string['popupheader'] = 'Popupheader';
 $string['type'] = 'Type';
 $string['popupcooldown'] = 'Popupcheckcooldown';
+$string['abortpopup'] = 'Stop showing popup';
+$string['email'] = 'e-mail';
+$string['popup'] = 'Popup';
+$string['manualcancel'] = 'Cancelled';
+$string['popupend'] = 'Show popup till';
 
 $string['sendmessage_section'] = "Send message";
 $string['general_config_header'] = "General Settings";
@@ -77,4 +82,6 @@ $string['invalidaborted'] = 'Supplied invalid aborted flag';
 $string['invalidnumoftotalusers'] = 'Supplied invalid amount of total users';
 $string['invalidnumofusers'] = 'Supplied invalid amount of users';
 $string['invalidfailamount'] = 'Supplied amount of fails is invalid';
+$string['invalidheader'] = 'Header is invalid';
+$string['invalidenddate'] = 'Enddate is invalid';
 

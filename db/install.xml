@@ -37,6 +37,7 @@
                 <FIELD NAME="message" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="message"/>
                 <FIELD NAME="header" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="header"/>
                 <FIELD NAME="roleids" TYPE="char" NOTNULL="true" SEQUENCE="false" COMMENT="roles to display popups to"/>
+                <FIELD NAME="enddate" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" DEFAULT="0" COMMENT="enddate"/>
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id"/>

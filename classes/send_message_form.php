@@ -54,6 +54,8 @@ class send_message_form extends moodleform {
         $mform->addElement('hidden', 'abort', null);
         $mform->setType('abort', PARAM_INT);
 
+        $mform->addElement('hidden', 'abortpopup', null);
+
         $name = 'subject';
         $title = get_string('subject', 'tool_messenger');
         $mform->addElement('textarea', $name, $title, 'wrap="virtual" rows="1" cols="100"');
@@ -109,6 +111,17 @@ class send_message_form extends moodleform {
         }
         $mform->disabledIf($name, 'type', 'eq', 2);
 
+        $name = 'popup_enddate';
+        $title = get_string('popupend', 'tool_messenger');
+        $mform->addElement('date_selector', $name, $title, array(
+            'startyear' => 2021,
+            'stopyear'  => 2030,
+            'timezone'  => 99,
+            'optional'  => false
+        ));
+        $mform->setDefault($name, strtotime('+1 weeks', time()));
+        $mform->disabledIf($name, 'type', 'eq', 0);
+
         $name = 'predictionlink';
         $title = get_string($name, 'tool_messenger');
         $linktext = get_string('predicitonlinktext', 'tool_messenger');
@@ -152,7 +165,7 @@ class send_message_form extends moodleform {
     public function print_table() {
         // Add Table.
         $this->tablehead();
-        $this->table_body();
+        $this->render_table_body();
     }
 
 
@@ -184,21 +197,25 @@ class send_message_form extends moodleform {
         $attributes = array();
         $attributes['class'] = 'header c3';
         $attributes['scope'] = 'col';
-        $output .= html_writer::tag('th', get_string('to', 'tool_messenger'), $attributes);
+        $output .= html_writer::tag('th', get_string('type', 'tool_messenger'), $attributes);
         $attributes = array();
         $attributes['class'] = 'header c4';
         $attributes['scope'] = 'col';
-        $output .= html_writer::tag('th', get_string('knockoutdatetable', 'tool_messenger'), $attributes);
+        $output .= html_writer::tag('th', get_string('to', 'tool_messenger'), $attributes);
         $attributes = array();
         $attributes['class'] = 'header c5';
         $attributes['scope'] = 'col';
-        $output .= html_writer::tag('th', get_string('progress', 'tool_messenger'), $attributes);
+        $output .= html_writer::tag('th', get_string('knockoutdatetable', 'tool_messenger'), $attributes);
         $attributes = array();
         $attributes['class'] = 'header c6';
         $attributes['scope'] = 'col';
-        $output .= html_writer::tag('th', get_string('priority', 'tool_messenger'), $attributes);
+        $output .= html_writer::tag('th', get_string('progress', 'tool_messenger'), $attributes);
         $attributes = array();
         $attributes['class'] = 'header c7';
+        $attributes['scope'] = 'col';
+        $output .= html_writer::tag('th', get_string('priority', 'tool_messenger'), $attributes);
+        $attributes = array();
+        $attributes['class'] = 'header c8';
         $attributes['scope'] = 'col';
         $output .= html_writer::tag('th', get_string('options', 'tool_messenger'), $attributes);
         $output .= html_writer::end_tag('tr');
@@ -211,77 +228,143 @@ class send_message_form extends moodleform {
      * Prints course categories and assigned moodle users.
      * @return string
      */
-    private function table_body() {
+    private function render_messagejob($record, $roles) {
         $mform = $this->_form;
-        $records = $this->get_records();
+        $mform->addElement('html', '<tr>');
+        $mform->addElement('html', '<td class="cell c1"><div>' .
+            $record->get('id') .
+            '</div></td>');
+        $mform->addElement('html', '<td class="cell c1"><div>' .
+            date('d.m.Y H:i', $record->get("timecreated")) .
+            '</div></td>');
+        $mform->addElement('html', '<td class="cell c2"><div>' .
+            '<button class="optionbutton btn btn-primary showmessagebutton" type="email" messageid="' . $record->get("id").
+            '">Show message </button>' .
+            '</div></td>');
+        $mform->addElement('html', '<td class="cell c3"><div class="tablewrap">' .
+            get_string('email', 'tool_messenger') .
+            '</div></td>');
+        // @codingStandardsIgnoreStart phpcs:disable
+        $to = implode(", ", array_map(function ($item) use ($roles) {
+            if ($roles[$item])
+                return $roles[$item];
+            return 'deleted role';
+            }, // Phpcs wants this to be one ident level up.
+            explode(",", $record->get('roleids'))));
+        // @codingStandardsIgnoreEnd phpcs:enable
+        $mform->addElement('html', '<td class="cell c4"><div class="tablewrap">' .
+             $to .
+            '</div></td>');
+        $lastlogin = $record->get('knockoutdate');
+        $lastlogintext = $lastlogin == 0 ? get_string('nolastlogin', 'tool_messenger') : date('d M Y', $lastlogin);
+        $mform->addElement('html', '<td class="cell c5"><div class="tablewrap">' .
+             $lastlogintext .
+            '</div></td>');
+        $progressstring = $record->get('senttonum') . " / " . $record->get("totalnumofusers");
+        $statusstring = $record->get('finished') ? $record->get('aborted') ? 'statusaborted' : 'statusfinished'
+            : 'statussending';
+        $failstring = '<br><span class="small text-muted">' . $record->get('failamount') . ' fails</span>';
+        $mform->addElement('html', '<td class="cell c6"><div>' .
+            "<span class='$statusstring'>$progressstring</span>" .
+            $failstring .
+            '</div></td>');
+        $mform->addElement('html', '<td class="cell c7"><div>' .
+            ($record->get("priority") + 1) .
+            '</div></td>');
 
-        $mform->addElement('html', '<tbody>');
-        $roles = $this->get_roles();
-        foreach ($records as $record) {
-            $mform->addElement('html', '<tr>');
-            $mform->addElement('html', '<td class="cell c1"><div>' .
-                $record->get('id') .
-                '</div></td>');
-            $mform->addElement('html', '<td class="cell c1"><div>' .
-                date('d.m.Y H:i', $record->get("timecreated")) .
-                '</div></td>');
-            $mform->addElement('html', '<td class="cell c2"><div>' .
-                '<button class="optionbutton btn btn-primary showmessagebutton" messageid="' . $record->get("id").
-                '">Show message </button>' .
-                '</div></td>');
-            // @codingStandardsIgnoreStart phpcs:disable
-            $to = implode(", ", array_map(function ($item) use ($roles) {
-                if ($roles[$item])
-                    return $roles[$item];
-                return 'deleted role';
-                }, // Phpcs wants this to be one ident level up.
-                explode(",", $record->get('roleids'))));
-            // @codingStandardsIgnoreEnd phpcs:enable
-            $mform->addElement('html', '<td class="cell c3"><div class="tablewrap">' .
-                 $to .
-                '</div></td>');
-            $lastlogin = $record->get('knockoutdate');
-            $lastlogintext = $lastlogin == 0 ? get_string('nolastlogin', 'tool_messenger') : date('d M Y', $lastlogin);
-            $mform->addElement('html', '<td class="cell c4"><div class="tablewrap">' .
-                 $lastlogintext .
-                '</div></td>');
-            $progressstring = $record->get('senttonum') . " / " . $record->get("totalnumofusers");
-            $statusstring = $record->get('finished') ? $record->get('aborted') ? 'statusaborted' : 'statusfinished'
-                : 'statussending';
-            $failstring = '<br><span class="small text-muted">' . $record->get('failamount') . ' fails</span>';
-            $mform->addElement('html', '<td class="cell c5"><div>' .
-                "<span class='$statusstring'>$progressstring</span>" .
-                $failstring .
-                '</div></td>');
-            $mform->addElement('html', '<td class="cell c6"><div>' .
-                ($record->get("priority") + 1) .
-                '</div></td>');
-
-            $mform->addElement('html', '<td class="cell c7">'.
-                '<input type="submit" class = "optionbutton btn btn-primary" name="followup" id="followup_'
+        $mform->addElement('html', '<td class="cell c8">'.
+            '<input type="submit" class = "optionbutton btn btn-primary" name="followup" id="followup_'
+            . $record->get('id') . '"
+            value="' . get_string('followup', 'tool_messenger') . '">'
+        );
+        if (!$record->get('finished')) {
+            $mform->addElement('html',
+                '<input type="submit" class = "optionbutton btn btn-primary delbutton" name="abort" id="abort_'
                 . $record->get('id') . '"
-                value="' . get_string('followup', 'tool_messenger') . '">'
+            value="' . get_string('abort', 'tool_messenger') . '">'
             );
-            if (!$record->get('finished')) {
-                $mform->addElement('html',
-                    '<input type="submit" class = "optionbutton btn btn-primary delbutton" name="abort" id="abort_'
-                    . $record->get('id') . '"
-                value="' . get_string('abort', 'tool_messenger') . '">'
-                );
-            }
-            $mform->addElement('html', '</tr>');
         }
-        $mform->addElement('html', '</tbody>');
-        $mform->addElement('html', '</table>');
+        $mform->addElement('html', '</tr>');
+    }
+
+    private function render_popup($record, $roles) {
+        $mform = $this->_form;
+        $mform->addElement('html', '<tr>');
+        $mform->addElement('html', '<td class="cell c1"><div>' .
+            $record->get('id') .
+            '</div></td>');
+        $mform->addElement('html', '<td class="cell c1"><div>' .
+            date('d.m.Y H:i', $record->get("timecreated")) .
+            '</div></td>');
+        $mform->addElement('html', '<td class="cell c2"><div>' .
+            '<button class="optionbutton btn btn-primary showmessagebutton" type="popup" messageid="' . $record->get("id").
+            '">Show message </button>' .
+            '</div></td>');
+        $mform->addElement('html', '<td class="cell c3"><div class="tablewrap">' .
+            get_string('popup', 'tool_messenger') .
+            '</div></td>');
+        // @codingStandardsIgnoreStart phpcs:disable
+        $to = implode(", ", array_map(function ($item) use ($roles) {
+            if ($roles[$item])
+                return $roles[$item];
+            return 'deleted role';
+        }, // Phpcs wants this to be one ident level up.
+            explode(",", $record->get('roleids'))));
+        // @codingStandardsIgnoreEnd phpcs:enable
+        $mform->addElement('html', '<td class="cell c4"><div class="tablewrap">' .
+            $to .
+            '</div></td>');
+        $enddate = $record->get('enddate');
+        $lastlogintext = $enddate == 0 ? get_string('manualcancel', 'tool_messenger') : date('d M Y', $enddate);
+        $mform->addElement('html', '<td class="cell c5"><div class="tablewrap">' .
+            $lastlogintext .
+            '</div></td>');
+        $progressstring = '-';
+        $mform->addElement('html', '<td class="cell c6"><div>' .
+            "<span>$progressstring</span>" .
+            '</div></td>');
+        $mform->addElement('html', '<td class="cell c7"><div>' .
+            '-' .
+            '</div></td>');
+        $mform->addElement('html', '<td class="cell c8">');
+        if ($enddate > time()) {
+            $mform->addElement('html',
+                '<input type="submit" class = "optionbutton btn btn-primary delbutton" name="abort" id="abortpopup_'
+                . $record->get('id') . '"
+            value="' . get_string('abortpopup', 'tool_messenger') . '">'
+            );
+        }
+        $mform->addElement('html', '</td>');
+        $mform->addElement('html', '</tr>');
     }
 
     /**
      * Returns all messagejobs.
      * @return array
      */
-    private function get_records() {
-        $records = \tool_messenger\message_persistent::get_records();
-        return $records;
+    private function render_table_body() {
+        $mform = $this->_form;
+        $emails = array_reverse(\tool_messenger\message_persistent::get_records());
+        $popups = array_reverse(\tool_messenger\popup_persistent::get_records());
+
+        $mform->addElement('html', '<tbody>');
+        $roles = $this->get_roles();
+
+        $mailiterator = 0;
+        $popupiterator = 0;
+        while ($mailiterator < count($emails) or $popupiterator < count($popups)) {
+            if (count($emails) == $mailiterator or
+                ($popupiterator != count($popups) and
+                $emails[$mailiterator]->get("timecreated") < $popups[$popupiterator]->get('timecreated'))) {
+                $this->render_popup($popups[$popupiterator], $roles);
+                $popupiterator++;
+            } else {
+                $this->render_messagejob($emails[$mailiterator], $roles);
+                $mailiterator++;
+            }
+        }
+        $mform->addElement('html', '</tbody>');
+        $mform->addElement('html', '</table>');
     }
 
     /**
