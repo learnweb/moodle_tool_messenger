@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="admin/tool/messenger/db" VERSION="2021060401" COMMENT="XMLDB file for Moodle tool/messenger"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="../../../../lib/xmldb/xmldb.xsd"
+>
+    <TABLES>
+        <TABLE NAME="tool_messenger_messagejobs" COMMENT="Table containing all messagejobs">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" COMMENT="id of the request"/>
+                <FIELD NAME="usermodified" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+                <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+                <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+                <FIELD NAME="message" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="message"/>
+                <FIELD NAME="subject" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="message"/>
+                <FIELD NAME="progress" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="current progress"/>
+                <FIELD NAME="roleids" TYPE="char" NOTNULL="true" SEQUENCE="false" COMMENT="roles to send messages to"/>
+                <FIELD NAME="knockoutdate" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Knockoutdate"/>
+                <FIELD NAME="priority" TYPE="int" LENGTH="3" NOTNULL="true" SEQUENCE="false" COMMENT="priority"/>
+                <FIELD NAME="finished" TYPE="int" LENGTH="1" DEFAULT="0" NOTNULL="true" SEQUENCE="false" COMMENT="finished flag"/>
+                <FIELD NAME="parentid" TYPE="int" LENGTH="10" NOTNULL= "false" SEQUENCE="false" COMMENT="parentid"/>
+                <FIELD NAME="instant" SEQUENCE="false" TYPE="int" LENGTH="1" NOTNULL="false" COMMENT="ignore limit flag"/>
+                <FIELD NAME="senttonum" SEQUENCE="false" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" COMMENT="num of users message was sent to"/>
+                <FIELD NAME="aborted" SEQUENCE="false" TYPE="int" NOTNULL="true" LENGTH="1" DEFAULT="0"/>
+                <FIELD NAME="totalnumofusers" SEQUENCE="false" TYPE="int" NOTNULL="true" DEFAULT="0" LENGTH="10"/>
+                <FIELD NAME="failamount" SEQUENCE="false" TYPE="int" NOTNULL="true" DEFAULT="0" LENGTH="10"/>
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+            </KEYS>
+        </TABLE>
+    </TABLES>
+</XMLDB>
