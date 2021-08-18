@@ -69,7 +69,7 @@ define(['jquery', 'core/modal_factory', 'core/url', 'core/ajax'], function ($, m
                     var day = $('#id_knockout_date_day').val();
                     var month = $('#id_knockout_date_month').val();
                     var year = $('#id_knockout_date_year').val();
-                    unix = Math.floor(new Date(year + "." + month + "." + day).getTime() / 1000);
+                    unix = Math.floor(new Date(year + "-" + month + "-" + day).getTime() / 1000);
                 } else {
                     unix = -1;
                 }
