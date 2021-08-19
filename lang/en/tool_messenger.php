@@ -86,3 +86,6 @@ $string['invalidfailamount'] = 'Supplied amount of fails is invalid';
 $string['invalidheader'] = 'Header is invalid';
 $string['invalidenddate'] = 'Enddate is invalid';
 
+$string['failure_no_recipients'] = "No recipients have been selected";
+$string['failure_no_message'] = "No message has been written";
+$string['failure_no_parent'] = "Parent record does not exist";

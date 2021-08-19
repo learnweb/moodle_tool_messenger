@@ -49,7 +49,11 @@ class send_message_form extends moodleform {
             $mform->setType($name, PARAM_INT);
             $mform->addHelpButton($name, $name, 'tool_messenger');
             $mform->setDefault($name, $_POST["followup"]);
-            $parent = new message_persistent($_POST["followup"]);
+            try {
+                $parent = new message_persistent($_POST["followup"]);
+            } catch (\dml_exception $e) {
+                $followuprequest = false;
+            }
         }
         $mform->addElement('hidden', 'abort', null);
         $mform->setType('abort', PARAM_INT);
@@ -156,6 +160,29 @@ class send_message_form extends moodleform {
         $mform->addGroup($buttonarray, 'buttonar', '', array(' '), false);
 
         $mform->addElement('html', '</div>');
+    }
+
+    /**
+     * Validates the user ids.
+     *
+     * @param array $data
+     * @param array $files
+     * @return array
+     */
+    public function validation($data, $files) {
+        $errors = parent::validation($data, $files);
+        if (isset($data['sendmessagebutton'])) {
+            if (count($data['recipients']) < 1) {
+                $errors['recipients'] = get_string('failure_no_recipients', 'tool_messenger');
+            }
+            if ($data['message']['text'] == '<p dir="ltr" style="text-align: left;"><br></p>' or $data['message']['text'] == "") {
+                $errors['message'] = get_string('failure_no_message', 'tool_messenger');
+            }
+            if (isset($data['followup']) and $data['followup'] != 0 and !message_persistent::record_exists($data['followup'])) {
+                $errors['followup'] = get_string('failure_no_parent', 'tool_messenger');
+            }
+        }
+        return $errors;
     }
 
     private function get_roles () {
@@ -366,17 +393,5 @@ class send_message_form extends moodleform {
         }
         $mform->addElement('html', '</tbody>');
         $mform->addElement('html', '</table>');
-    }
-
-    /**
-     * Validates the user ids.
-     *
-     * @param array $data
-     * @param array $files
-     * @return array
-     */
-    public function validation($data, $files) {
-        $errors = parent::validation($data, $files);
-        return $errors;
     }
 }

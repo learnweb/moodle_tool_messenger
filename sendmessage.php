@@ -68,7 +68,7 @@ if (has_capability('tool/messenger:sendmessages', context_system::instance())) {
     $mform->print_table();
 
     $PAGE->requires->js_call_amd('tool_messenger/options', 'init');
-    if ($followuprequest) {
+    if ($followuprequest && message_persistent::record_exists($_POST['followup'])) {
         $parent = new message_persistent($data->followup);
         $PAGE->requires->js_call_amd('tool_messenger/followup', 'set_correct_parent_date', array($parent->get('knockoutdate')));
     } else {
