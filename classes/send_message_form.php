@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Tool messenger block admin form.
+ * Tool messenger admin form.
  *
  * @package tool_messenger
- * @copyright 2017 Robin Tschudi
+ * @copyright 2021 Robin Tschudi | WWU Münster
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -30,8 +30,18 @@ use html_writer;
 defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . '/formslib.php');
-
+/**
+ * Class for the form for sending messages with the tool_messenger plugin
+ *
+ * @package tool_messenger
+ * @copyright 2021 Robin Tschudi
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class send_message_form extends moodleform {
+    /**
+     * Defines the send message form.
+     * @throws \coding_exception
+     */
     protected function definition() {
         $mform = $this->_form;
 
@@ -129,11 +139,19 @@ class send_message_form extends moodleform {
         $mform->addElement('html', '</div>');
     }
 
+    /**
+     * Get Roles from the DB.
+     * @return array
+     * @throws \dml_exception
+     */
     private function get_roles () {
         global $DB;
         return $DB->get_records_sql_menu('SELECT id, shortname FROM {role}');
     }
 
+    /**
+     * Print the table.
+     */
     public function print_table() {
         // Add Table.
         $this->tablehead();
@@ -143,7 +161,8 @@ class send_message_form extends moodleform {
 
     /**
      * Prints the table head (e.g. column names).
-     * @return string
+     * @return void
+     * @throws \coding_exception
      */
     public function tablehead() {
         $mform = $this->_form;
@@ -194,7 +213,9 @@ class send_message_form extends moodleform {
 
     /**
      * Prints course categories and assigned moodle users.
-     * @return string
+     * @return void
+     * @throws \coding_exception
+     * @throws \dml_exception
      */
     private function table_body() {
         $mform = $this->_form;

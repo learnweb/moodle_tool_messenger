@@ -13,23 +13,39 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
+/**
+ * Taskclass for cleaning up jobs
+ * @package tool_messenger
+ * @copyright 2021 Robin Tschudi
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 namespace tool_messenger\task;
 
+use coding_exception;
 use core\task\scheduled_task;
+use dml_exception;
+use lang_string;
 
 /**
  * Taskclass for cleaning up jobs
+ * @package tool_messenger
+ * @copyright 2021 Robin Tschudi
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class cleanup_jobs extends scheduled_task {
 
+    /**
+     * Get the Name.
+     * @return lang_string|string
+     * @throws coding_exception
+     */
     public function get_name() {
         return get_string('cleanupjobstask', 'tool_messenger');
     }
 
     /**
      * Deletes all jobs that are older than the saveperiod supplied in the plugins config.
-     * @throws \dml_exception
+     * @throws dml_exception
      */
     public function execute() {
         global $DB;

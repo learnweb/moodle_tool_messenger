@@ -14,6 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * This file keeps track of the task of the tool_messenger plugin
+ *
+ * @package   tool_messenger
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright Robin Tschudi 2021
+ */
+
 defined('MOODLE_INTERNAL') || die();
 
 $tasks = array(

@@ -13,14 +13,34 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+/**
+ * Behat Test for tool messenger
+ *
+ * @package tool_messenger
+ * @copyright 2021 Robin Tschudi | WWU Münster
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
-class behat_tool_messenger extends behat_base{
+use Behat\Behat\Hook\Scope\AfterStepScope;
 
-    public const ERRORSAVEPATH = "/var/www/public/moodle/errorbackend.html";
+/**
+ * Behat test for tool messenger
+ *
+ * @package tool_messenger
+ * @copyright 2021 Robin Tschudi | WWU Münster
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class behat_tool_messenger extends behat_base {
 
     /**
-     * Store Page content on failure
      *
+     */
+    public const ERRORSAVEPATH = "/var/www/public/moodle/errorbackend.html";
+
+
+    /**
+     * Store Page content on failure.
+     * @param AfterStepScope $scope
      * @AfterStep
      */
     public function take_screenshot_after_failed_step (Behat\Behat\Hook\Scope\AfterStepScope $scope) {
@@ -34,6 +54,7 @@ class behat_tool_messenger extends behat_base{
     }
 
     /**
+     * Check if persistent message exist.
      * @param $table
      * @Then there should be a persistent with the following data:
      */
@@ -50,6 +71,7 @@ class behat_tool_messenger extends behat_base{
     }
 
     /**
+     * Check the status of a identified checkbox.
      * @param $name
      * @Given I check the checkbox with the name :name
      */
@@ -58,7 +80,9 @@ class behat_tool_messenger extends behat_base{
         $checkbox->check();
     }
 
+
     /**
+     * Uncheck a Box.
      * @param $name
      * @Given I uncheck the checkbox with the name :name
      */
@@ -69,5 +93,4 @@ class behat_tool_messenger extends behat_base{
         }
         ob_flush();
     }
-
 }

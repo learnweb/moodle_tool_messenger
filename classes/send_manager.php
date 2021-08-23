@@ -13,13 +13,34 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
+/**
+ * Class for sending messages with the tool_messenger plugin
+ *
+ * @package tool_messenger
+ * @copyright 2021 Robin Tschudi
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 namespace tool_messenger;
 
 defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Class for sending messages with the tool_messenger plugin
+ *
+ * @package tool_messenger
+ * @copyright 2021 Robin Tschudi
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class send_manager {
 
+    /**
+     * Send Mails.
+     * @param $jobid
+     * @param $limit
+     * @return int|void
+     * @throws \coding_exception
+     * @throws \dml_exception
+     */
     public function send_emails_for_job_with_limit($jobid, $limit) {
         $jobdata = new message_persistent($jobid);
         $progress = $jobdata->get('progress');
@@ -65,6 +86,12 @@ class send_manager {
         return $numofprocessedusers;
     }
 
+    /**
+     * Check how many mails sent.
+     *
+     * @throws \coding_exception
+     * @throws \dml_exception
+     */
     public function run_to_cronlimit() {
         global $DB;
         $cronlimit = get_config('tool_messenger', 'emailspercron');
@@ -90,6 +117,16 @@ class send_manager {
         }
     }
 
+    /**
+     * Check which users will get mails.
+     * @param $roleids
+     * @param $knockoutdate
+     * @param $progress
+     * @param $limit
+     * @param $parentlimit
+     * @return array
+     * @throws \dml_exception
+     */
     public function get_userids($roleids, $knockoutdate, $progress, $limit, $parentlimit): array {
         global $DB;
         if (count($roleids) == 0 or $roleids[0] == "") {

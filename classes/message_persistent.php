@@ -13,22 +13,33 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
+/**
+ * Class for persistent messages for the tool_messenger plugin
+ *
+ * @package tool_messenger
+ * @copyright 2021 Robin Tschudi
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 namespace tool_messenger;
 use core\persistent;
 
 defined('MOODLE_INTERNAL') || die;
 
 /**
- * Class for loading/storing messages for the tool_messenger plugin
+ * Class for persistent messages for the tool_messenger plugin
  *
- * @package tool_messagejobs
+ * @package tool_messenger
  * @copyright 2021 Robin Tschudi
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class message_persistent extends persistent{
+    /** Define the constant name. */
     const TABLE = 'tool_messenger_messagejobs';
 
+    /**
+     * Properties for persistent messages.
+     * @return array[]
+     */
     protected static function define_properties() {
         return array(
             'message' => array (

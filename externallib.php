@@ -13,18 +13,27 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+/**
+ * External lib for the tool messenger.
+ *
+ * @package tool_messenger
+ * @copyright 2021 Robin Tschudi | WWU Münster
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 defined('MOODLE_INTERNAL') || die();
 
 require_once("$CFG->libdir/externallib.php");
 
 /**
- * name of the plugin...
+ * Name of the plugin...
  */
 const PLUGINNAME = 'tool_messenger';
 
 /**
- * external api for ajax calls
+ * External api for ajax calls
  * @package tool_messenger
+ * @copyright 2021 Robin Tschudi | WWU Münster
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class tool_messenger_external extends external_api {
 
@@ -96,9 +105,9 @@ class tool_messenger_external extends external_api {
 
     /**
      * Returns a the message as json object
-     * @param $id int
-     * @return string
-     * @throws coding_exception
+     * @param $id
+     * @return false|string
+     * @throws dml_exception
      */
     public static function get_message($id) {
         global $DB;

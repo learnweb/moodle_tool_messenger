@@ -22,9 +22,19 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
-
+/**
+ * Test class for the moodle tool_messenger plugin.
+ *
+ * @package    tool_messenger
+ * @copyright  2021 Robin Tschudi | WWU Münster
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class tool_messenger_testcase extends advanced_testcase {
 
+
+    /**
+     * Set up the test environment.
+     */
     protected function setUp() {
         parent::setUp();
         $this->resetAfterTest(true);
@@ -44,6 +54,12 @@ class tool_messenger_testcase extends advanced_testcase {
         $teacher3 = $generator->create_and_enrol($course1, 'teacher', array('username' => 'teacher3', 'lastaccess' => $timestamponeyearago));
     }
 
+    /**
+     * Test if Mails are sent.
+     * @throws \core\invalid_persistent_exception
+     * @throws coding_exception
+     * @throws dml_exception
+     */
     public function test_sending_mails() {
         $data = new \stdClass();
         $data->recipients = array($this->get_roleid('teacher'));
@@ -67,6 +83,12 @@ class tool_messenger_testcase extends advanced_testcase {
         $this->assertStringContainsString('message', $messages[0]->body);
     }
 
+    /**
+     * Test if the cronlimit works.
+     * @throws \core\invalid_persistent_exception
+     * @throws coding_exception
+     * @throws dml_exception
+     */
     public function test_cronlimit() {
         $data = new \stdClass();
         $data->recipients = array($this->get_roleid('teacher'));
@@ -91,6 +113,12 @@ class tool_messenger_testcase extends advanced_testcase {
         $this->assertEquals(1, $sink->count());
     }
 
+    /**
+     * Test whether users who did not log in are excluded.
+     * @throws \core\invalid_persistent_exception
+     * @throws coding_exception
+     * @throws dml_exception
+     */
     public function test_knockoutdate() {
         $data = new \stdClass();
         $timestamplessthanoneyearago = time() - 31622600 + 1;
@@ -113,6 +141,12 @@ class tool_messenger_testcase extends advanced_testcase {
         $this->assertEquals(2, $sink->count());
     }
 
+    /**
+     * Test the instant sending feature
+     * @throws \core\invalid_persistent_exception
+     * @throws coding_exception
+     * @throws dml_exception
+     */
     public function test_instant_sending() {
         $data = new \stdClass();
         $timestamplessthanoneyearago = time() - 31622600 + 1;
@@ -135,6 +169,12 @@ class tool_messenger_testcase extends advanced_testcase {
         $this->assertEquals(2, $sink->count());
     }
 
+    /**
+     * Test the follow up feature.
+     * @throws \core\invalid_persistent_exception
+     * @throws coding_exception
+     * @throws dml_exception
+     */
     public function test_followup() {
         $data = new \stdClass();
         $data->recipients = array($this->get_roleid('teacher'));
@@ -183,6 +223,12 @@ class tool_messenger_testcase extends advanced_testcase {
         $this->assertStringContainsString('followup', $messages[0]->body);
     }
 
+    /**
+     * Test the abort feature.
+     * @throws \core\invalid_persistent_exception
+     * @throws coding_exception
+     * @throws dml_exception
+     */
     public function test_abort() {
         $data = new \stdClass();
         $data->recipients = array($this->get_roleid('teacher'));
@@ -206,6 +252,12 @@ class tool_messenger_testcase extends advanced_testcase {
         $this->assertEquals(0, count($messages));
     }
 
+    /**
+     * Test the priority feature.
+     * @throws \core\invalid_persistent_exception
+     * @throws coding_exception
+     * @throws dml_exception
+     */
     public function test_priority() {
         $data = new \stdClass();
         $data->recipients = array($this->get_roleid('teacher'));
@@ -243,6 +295,12 @@ class tool_messenger_testcase extends advanced_testcase {
         $this->assertStringContainsString('message', $messages[2]->body);
     }
 
+    /**
+     * Get the role id.
+     * @param $role
+     * @return false|mixed
+     * @throws dml_exception
+     */
     private function get_roleid($role) {
         global $DB;
         return $DB->get_field('role', 'id', array('shortname' => $role));

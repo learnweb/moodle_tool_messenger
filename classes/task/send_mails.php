@@ -13,7 +13,12 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
+/**
+ * Taskclass for sending mails
+ * @package tool_messenger
+ * @copyright 2021 Robin Tschudi
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 namespace tool_messenger\task;
 
 use tool_messenger\send_manager;
@@ -22,6 +27,9 @@ defined('MOODLE_INTERNAL') || die();
 
 /**
  * Taskclass for sending mails
+ * @package tool_messenger
+ * @copyright 2021 Robin Tschudi
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class send_mails extends \core\task\scheduled_task {
     /**

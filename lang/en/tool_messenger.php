@@ -13,7 +13,13 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
+/**
+ * Language Strings for the tool Messenger
+ *
+ * @package tool_messenger
+ * @copyright 2021 Robin Tschudi | WWU Münster
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 $string['pluginname'] = "Admin messenger";
 $string['tool_messenger'] = "Admin messenger";
 $string['sendmailstask'] = "Send mails task for the admin messenger plugin";
