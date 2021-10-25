@@ -68,6 +68,7 @@ $string['firstlogindatetable'] = 'created after';
 $string['firstlogindateenable'] = 'Ignore users that were created before some time';
 $string['sendmessage_section'] = "Send message";
 $string['general_config_header'] = "General Settings";
+$string['select_all_recipients'] = "Select all recipients";
 
 $string['invalidmessage'] = "Supplied message is invalid";
 $string['invalidsubject'] = "Supplied subject is invalid";

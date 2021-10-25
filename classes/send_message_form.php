@@ -87,6 +87,11 @@ class send_message_form extends moodleform {
         if ($followuprequest) {
             $mform->disabledIf($name, 'followup', 'neq', 0);
         }
+
+        $name = 'select_all_recipients';
+        $title = get_string('select_all_recipients', 'tool_messenger');
+        $mform->addElement('button', $name, $title);
+
         $name = 'knockout_enable';
         $title = get_string('knockoutenable', 'tool_messenger');
         $mform->addElement('advcheckbox', $name, $title, ' ');

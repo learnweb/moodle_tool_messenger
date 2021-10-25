@@ -50,6 +50,18 @@ define(['jquery', 'core/modal_factory', 'core/url', 'core/ajax'], function ($, m
         });
     };
 
+    var init_select_all_button = function () {
+        $('#id_select_all_recipients').click(function () {
+            var vals = [];
+            $('#id_recipients').children().each(
+                function (i, option) {
+                    vals.push(option.value);
+                }
+            );
+            $('#id_recipients').val(vals);
+        });
+    };
+
     var init_predicitonlink = function () {
 
         $('#predictiontrigger').click(function (event) {
@@ -118,6 +130,7 @@ define(['jquery', 'core/modal_factory', 'core/url', 'core/ajax'], function ($, m
             sanitize_form();
             initialize_showmessage_buttons();
             init_predicitonlink();
+            init_select_all_button();
         });
     };
 
