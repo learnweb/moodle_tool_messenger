@@ -23,6 +23,7 @@
                 <FIELD NAME="aborted" SEQUENCE="false" TYPE="int" NOTNULL="true" LENGTH="1" DEFAULT="0"/>
                 <FIELD NAME="totalnumofusers" SEQUENCE="false" TYPE="int" NOTNULL="true" DEFAULT="0" LENGTH="10"/>
                 <FIELD NAME="failamount" SEQUENCE="false" TYPE="int" NOTNULL="true" DEFAULT="0" LENGTH="10"/>
+                <FIELD NAME="firstlogindate" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" DEFAULT="0" COMMENT="Knockoutdate"/>
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -38,6 +39,7 @@
                 <FIELD NAME="header" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="header"/>
                 <FIELD NAME="roleids" TYPE="char" NOTNULL="true" SEQUENCE="false" COMMENT="roles to display popups to"/>
                 <FIELD NAME="enddate" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" DEFAULT="0" COMMENT="enddate"/>
+                <FIELD NAME="firstlogindate" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" DEFAULT="0" COMMENT="Knockoutdate"/>
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id"/>

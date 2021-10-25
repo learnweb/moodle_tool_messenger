@@ -87,7 +87,11 @@ class message_persistent extends persistent{
                 'type' => PARAM_INT,
                 'message' => new \lang_string('invalidfailamount', 'tool_messenger'),
                 'default' => 0
-            )
+            ),
+            'firstlogindate' => array (
+                'type' => PARAM_INT,
+                'message' => new \lang_string('invalidknockoutdate', 'tool_messenger')
+            ),
         );
     }
 

@@ -63,7 +63,9 @@ $string['email'] = 'e-mail';
 $string['popup'] = 'Popup';
 $string['manualcancel'] = 'Cancelled';
 $string['popupend'] = 'Show popup till';
-
+$string['firstlogindate'] = 'Ignore users that were created before';
+$string['firstlogindatetable'] = 'created after';
+$string['firstlogindateenable'] = 'Ignore users that were created before some time';
 $string['sendmessage_section'] = "Send message";
 $string['general_config_header'] = "General Settings";
 

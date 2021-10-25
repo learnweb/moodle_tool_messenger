@@ -40,17 +40,23 @@ class popup_persistent extends persistent {
             'enddate' => array(
                 'type' => PARAM_INT,
                 'message' => new \lang_string('invalidenddate', 'tool_messenger')
-            )
+            ),
+            'firstlogindate' => array(
+                'type' => PARAM_INT,
+                'message' => new \lang_string('invalidenddate', 'tool_messenger')
+            ),
         );
     }
 
     public static function get_popups_for_role_since($roleids, $lastid) {
-        global $DB;
+        global $DB, $USER;
         $recordset = $DB->get_recordset_sql('SELECT * FROM {' . self::TABLE . '} WHERE id>' . $lastid . ' AND enddate>' . time());
         $popups = [];
         foreach ($recordset as $record) {
             if (count(array_intersect(explode(',', $record->roleids), $roleids)) > 0) {
-                $popups[] = new popup_persistent(0, $record);
+                if ($USER->timecreated >= $record->get('firstlogindate')) {
+                    $popups[] = new popup_persistent(0, $record);
+                }
             }
         }
         return $popups;

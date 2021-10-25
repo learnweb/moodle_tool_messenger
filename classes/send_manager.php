@@ -26,6 +26,7 @@ class send_manager {
         $message = $jobdata->get('message');
         $subject = $jobdata->get('subject');
         $fails = $jobdata->get('failamount');
+        $firstlogindate = $jobdata->get('firstlogindate');
         $roleids = explode(",", $jobdata->get('roleids'));
         $knockoutdate = $jobdata->get('knockoutdate');
         $userfrom = \core_user::get_user(get_config('tool_messenger', 'sendinguserid'));
@@ -38,7 +39,7 @@ class send_manager {
             $knockoutdate = $jobdata->get('knockoutdate');
         }
 
-        $userbatch = $this->get_userids($roleids, $knockoutdate, $progress, $limit, $parentlimit);
+        $userbatch = $this->get_userids($roleids, $knockoutdate, $progress, $limit, $parentlimit, $firstlogindate);
         $lastprocesseduser = -1;
         foreach ($userbatch as $userid) {
             $lastprocesseduser = max(intval($userid->userid), $lastprocesseduser);
@@ -90,7 +91,7 @@ class send_manager {
         }
     }
 
-    public function get_userids($roleids, $knockoutdate, $progress, $limit, $parentlimit): array {
+    public function get_userids($roleids, $knockoutdate, $progress, $limit, $parentlimit, $firstlogindate): array {
         global $DB;
         if (count($roleids) == 0 or $roleids[0] == "") {
             return [];
@@ -101,6 +102,7 @@ class send_manager {
             $where .= "OR roleid = " . $roleids[$i];
         }
         $where .= ") AND u.lastaccess >= $knockoutdate";
+        $where .= ") AND u.timecreated >= $firstlogindate";
         $where .= " AND userid > $progress";
         if ($parentlimit >= 0) {
             $where .= " AND userid <= $parentlimit";

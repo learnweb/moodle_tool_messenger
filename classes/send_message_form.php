@@ -33,6 +33,7 @@ require_once($CFG->libdir . '/formslib.php');
 
 class send_message_form extends moodleform {
     protected function definition() {
+        global $USER;
         $mform = $this->_form;
 
         $mform->addElement('html', '<div id="adminsettings">');
@@ -126,6 +127,36 @@ class send_message_form extends moodleform {
         ));
         $mform->setDefault($name, strtotime('+1 weeks', time()));
         $mform->disabledIf($name, 'type', 'eq', 0);
+
+        $name = 'firstlogindateenable';
+        $title = get_string('firstlogindateenable', 'tool_messenger');
+        $mform->addElement('advcheckbox', $name, $title, ' ');
+        $default = 0;
+        if ($followuprequest and $parent->get('firstlogindateenable') == 1) {
+            $default = 1;
+        }
+        if ($followuprequest) {
+            $mform->disabledIf($name, 'followup', 'neq', 0);
+        }
+        $mform->setDefault($name, $default);
+
+        $name = 'firstlogindate';
+        $title = get_string ('firstlogindate', 'tool_messenger');
+        $mform->addElement('date_selector', $name, $title, array(
+            'startyear' => 2010,
+            'stopyear'  => 2030,
+            'timezone'  => 99,
+            'optional'  => false
+        ));
+        if ($followuprequest) {
+            $timestamp = (int) $parent->get('firstlogindate');
+            $mform->setDefault($name, $timestamp);
+            $mform->disabledIf($name, 'followup', 'neq', 0);
+        } else {
+            $timestamp = time();
+            $mform->setDefault($name, $timestamp);
+            $mform->disabledIf($name, 'firstlogindateenable');
+        }
 
         $name = 'predictionlink';
         $title = get_string($name, 'tool_messenger');
@@ -233,17 +264,21 @@ class send_message_form extends moodleform {
         $attributes = array();
         $attributes['class'] = 'header c5';
         $attributes['scope'] = 'col';
-        $output .= html_writer::tag('th', get_string('knockoutdatetable', 'tool_messenger'), $attributes);
+        $output .= html_writer::tag('th', get_string('firstlogindatetable', 'tool_messenger'), $attributes);
         $attributes = array();
         $attributes['class'] = 'header c6';
         $attributes['scope'] = 'col';
-        $output .= html_writer::tag('th', get_string('progress', 'tool_messenger'), $attributes);
+        $output .= html_writer::tag('th', get_string('knockoutdatetable', 'tool_messenger'), $attributes);
         $attributes = array();
         $attributes['class'] = 'header c7';
         $attributes['scope'] = 'col';
-        $output .= html_writer::tag('th', get_string('priority', 'tool_messenger'), $attributes);
+        $output .= html_writer::tag('th', get_string('progress', 'tool_messenger'), $attributes);
         $attributes = array();
         $attributes['class'] = 'header c8';
+        $attributes['scope'] = 'col';
+        $output .= html_writer::tag('th', get_string('priority', 'tool_messenger'), $attributes);
+        $attributes = array();
+        $attributes['class'] = 'header c9';
         $attributes['scope'] = 'col';
         $output .= html_writer::tag('th', get_string('options', 'tool_messenger'), $attributes);
         $output .= html_writer::end_tag('tr');
@@ -283,24 +318,29 @@ class send_message_form extends moodleform {
         $mform->addElement('html', '<td class="cell c4"><div class="tablewrap">' .
              $to .
             '</div></td>');
+        $firstlogindate = $record->get('firstlogindate');
+        $firstlogindatetext = $firstlogindate == 0 ? get_string('nolastlogin', 'tool_messenger') : date('d M Y', $firstlogindate);
+        $mform->addElement('html', '<td class="cell c5"><div class="tablewrap">' .
+            $firstlogindatetext .
+            '</div></td>');
         $lastlogin = $record->get('knockoutdate');
         $lastlogintext = $lastlogin == 0 ? get_string('nolastlogin', 'tool_messenger') : date('d M Y', $lastlogin);
-        $mform->addElement('html', '<td class="cell c5"><div class="tablewrap">' .
+        $mform->addElement('html', '<td class="cell c6"><div class="tablewrap">' .
              $lastlogintext .
             '</div></td>');
         $progressstring = $record->get('senttonum') . " / " . $record->get("totalnumofusers");
         $statusstring = $record->get('finished') ? $record->get('aborted') ? 'statusaborted' : 'statusfinished'
             : 'statussending';
         $failstring = '<br><span class="small text-muted">' . $record->get('failamount') . ' fails</span>';
-        $mform->addElement('html', '<td class="cell c6"><div>' .
+        $mform->addElement('html', '<td class="cell c7"><div>' .
             "<span class='$statusstring'>$progressstring</span>" .
             $failstring .
             '</div></td>');
-        $mform->addElement('html', '<td class="cell c7"><div>' .
+        $mform->addElement('html', '<td class="cell c8"><div>' .
             ($record->get("priority") + 1) .
             '</div></td>');
 
-        $mform->addElement('html', '<td class="cell c8">'.
+        $mform->addElement('html', '<td class="cell c9">'.
             '<input type="submit" class = "optionbutton btn btn-primary" name="followup" id="followup_'
             . $record->get('id') . '"
             value="' . get_string('followup', 'tool_messenger') . '">'
@@ -342,19 +382,24 @@ class send_message_form extends moodleform {
         $mform->addElement('html', '<td class="cell c4"><div class="tablewrap">' .
             $to .
             '</div></td>');
+        $firstlogindate = $record->get('firstlogindate');
+        $firstlogindatetext = $firstlogindate == 0 ? get_string('nolastlogin', 'tool_messenger') : date('d M Y', $firstlogindate);
+        $mform->addElement('html', '<td class="cell c5"><div class="tablewrap">' .
+            $firstlogindatetext .
+            '</div></td>');
         $enddate = $record->get('enddate');
         $lastlogintext = $enddate == 0 ? get_string('manualcancel', 'tool_messenger') : date('d M Y', $enddate);
-        $mform->addElement('html', '<td class="cell c5"><div class="tablewrap">' .
+        $mform->addElement('html', '<td class="cell c6"><div class="tablewrap">' .
             $lastlogintext .
             '</div></td>');
         $progressstring = '-';
-        $mform->addElement('html', '<td class="cell c6"><div>' .
+        $mform->addElement('html', '<td class="cell c7"><div>' .
             "<span>$progressstring</span>" .
             '</div></td>');
-        $mform->addElement('html', '<td class="cell c7"><div>' .
+        $mform->addElement('html', '<td class="cell c8"><div>' .
             '-' .
             '</div></td>');
-        $mform->addElement('html', '<td class="cell c8">');
+        $mform->addElement('html', '<td class="cell c9">');
         if ($enddate > time()) {
             $mform->addElement('html',
                 '<input type="submit" class = "optionbutton btn btn-primary delbutton" name="abort" id="abortpopup_'

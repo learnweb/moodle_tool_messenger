@@ -213,5 +213,29 @@ function xmldb_tool_messenger_upgrade ($oldversion) {
         upgrade_plugin_savepoint(true, 2021081006, 'tool', 'messenger');
     }
 
+    if ($oldversion < 2021101900) {
+        $table = new xmldb_table('tool_messenger_messagejobs');
+        $table->add_field('firstlogindate', XMLDB_TYPE_INTEGER, '10', null, null, null, 0);
+
+        foreach ($table->getFields() as $item) {
+            if (!$dbman->field_exists($table, $item)) {
+                $dbman->add_field($table, $item);
+            }
+        }
+        upgrade_plugin_savepoint(true, 2021101900, 'tool', 'messenger');
+    }
+
+    if ($oldversion < 2021102402) {
+        $table = new xmldb_table('tool_messenger_popups');
+        $table->add_field('firstlogindate', XMLDB_TYPE_INTEGER, '10', null, null, null, 0);
+
+        foreach ($table->getFields() as $item) {
+            if (!$dbman->field_exists($table, $item)) {
+                $dbman->add_field($table, $item);
+            }
+        }
+        upgrade_plugin_savepoint(true, 2021101902, 'tool', 'messenger');
+    }
+
     return true;
 }

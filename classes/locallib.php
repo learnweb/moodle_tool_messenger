@@ -61,6 +61,7 @@ class locallib {
             $record->parentid = $parentid;
             $record->roleids = $roleids;
             $record->knockoutdate = $knockoutdate;
+            $record->firstlogin = $record->firstloginenable ? $record->firstlogin : 0;
             $record->instant = $data->directsend;
 
             $manager = new \tool_messenger\send_manager();
@@ -85,6 +86,7 @@ class locallib {
             $record->message = $data->message['text'];
             $record->roleids = $this->get_roleids($data);
             $record->enddate = $data->popup_enddate;
+            $record->firstlogin = $record->firstloginenable ? $record->firstlogin : 0;
             $persistent = new \tool_messenger\popup_persistent(0, $record);
             $persistent->create();
         }
