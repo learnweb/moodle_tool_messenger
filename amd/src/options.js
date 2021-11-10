@@ -86,8 +86,17 @@ define(['jquery', 'core/modal_factory', 'core/url', 'core/ajax'], function ($, m
                 } else {
                     unix = -1;
                 }
+                var firstlogin;
+                if ($('#id_firstlogindateenable').prop('checked')) {
+                    var fday = $('#id_knockout_date_day').val();
+                    var fmonth = $('#id_knockout_date_month').val();
+                    var fyear = $('#id_knockout_date_year').val();
+                    firstlogin = Math.floor(new Date(fyear + "." + fmonth + "." + fday).getTime() / 1000);
+                } else {
+                    firstlogin = Number.MAX_SAFE_INTEGER;
+                }
                 // Build url.
-                params = {'roles': roles.join(","), 'knockoutdate': unix};
+                params = {'roles': roles.join(","), 'knockoutdate': unix, 'firstlogindate': firstlogin};
             }
             ajax.call([
                 {methodname: 'tool_messenger_predict_users', args: params}
@@ -96,6 +105,7 @@ define(['jquery', 'core/modal_factory', 'core/url', 'core/ajax'], function ($, m
             }).fail(function (ex) {
                 window.console.log('fetch predicted users failed: ');
                 window.console.log(ex);
+                window.console.log(ex.message);
             });
         });
     };

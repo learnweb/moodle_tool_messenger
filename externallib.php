@@ -36,8 +36,9 @@ class tool_messenger_external extends external_api {
         return new external_function_parameters(
             array(
                     'parentid' => new external_value(PARAM_INT, 'parentid', VALUE_DEFAULT, -1),
-                    'knockoutdate' => new external_value(PARAM_INT, 'parentid', VALUE_DEFAULT, -1),
-                    'roles' => new external_value(PARAM_TEXT, 'parentid', VALUE_DEFAULT, "no_data"),
+                    'knockoutdate' => new external_value(PARAM_INT, 'knockoutdate', VALUE_DEFAULT, -1),
+                    'roles' => new external_value(PARAM_TEXT, 'roles', VALUE_DEFAULT, "no_data"),
+                    'firstlogindate' => new external_value(PARAM_INT, 'firstlogindate', VALUE_DEFAULT, PHP_INT_MAX)
                 )
         );
     }
@@ -58,7 +59,7 @@ class tool_messenger_external extends external_api {
      * @return lang_string|string
      * @throws coding_exception
      */
-    public static function predict_users($parentid, $knockoutdate, $roles) {
+    public static function predict_users($parentid, $knockoutdate, $roles, $firstlogindate) {
         if ($roles == "no data" and $knockoutdate == -1 and $parentid == -1) {
             return (get_string('predicionerror', PLUGINNAME));
         }
@@ -70,7 +71,7 @@ class tool_messenger_external extends external_api {
         }
         $manager = new \tool_messenger\send_manager();
         return (get_string('prediction_about', PLUGINNAME)
-            . count($manager->get_userids(explode(",", $roles), $knockoutdate, 0, -1, -1))
+            . count($manager->get_userids(explode(",", $roles), $knockoutdate, 0, -1, -1, $firstlogindate))
             . get_string('prediction_sent', PLUGINNAME));
     }
 

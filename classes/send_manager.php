@@ -99,10 +99,10 @@ class send_manager {
         $sql = "SELECT DISTINCT userid FROM {role_assignments} ra JOIN {user} u ON u.id = ra.userid";
         $where = " WHERE (roleid = " . $roleids[0];
         for ($i = 1; $i < count($roleids); $i++) {
-            $where .= "OR roleid = " . $roleids[$i];
+            $where .= " OR roleid = " . $roleids[$i];
         }
         $where .= ") AND u.lastaccess >= $knockoutdate";
-        $where .= ") AND u.timecreated >= $firstlogindate";
+        $where .= " AND u.timecreated >= $firstlogindate";
         $where .= " AND userid > $progress";
         if ($parentlimit >= 0) {
             $where .= " AND userid <= $parentlimit";
