@@ -2,9 +2,9 @@ define(['jquery', 'core/modal_factory', 'core/url', 'core/ajax'], function ($, m
 
     /**
      * Returns a function that will append a supplied form with a key: value pair
-     * @param formid the forms id
-     * @param name the key name
-     * @param value the value
+     * @param {string} formid the forms id
+     * @param {string} name the key name
+     * @param {string} value the value
      * @returns {(function(): void)}
      */
     var append = function(formid, name, value) {
@@ -19,7 +19,7 @@ define(['jquery', 'core/modal_factory', 'core/url', 'core/ajax'], function ($, m
     /**
      * Shows the message that was sent with a tool_messenge instance.
      * the message id has to be supplied by the events current target through its messageid attribute.
-     * @param event
+     * @param {Event} event
      */
     var show_message = function (event) {
         event.preventDefault();
