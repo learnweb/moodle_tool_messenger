@@ -13,6 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
  * Taskclass for sending mails
  * @package tool_messenger
@@ -38,13 +39,13 @@ class send_mails extends \core\task\scheduled_task {
      * @return string
      * @throws \coding_exception
      */
-    public function get_name () {
+    public function get_name() {
         return get_string('sendmailstask', 'tool_messenger');
     }
     /**
      * This will start and close surveys.
      */
-    public function execute () {
+    public function execute() {
         $sendmailmanager = new send_manager();
         $sendmailmanager->run_to_cronlimit();
     }

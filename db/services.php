@@ -13,6 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
  * This file keeps track of the capabilities of the tool_messenger plugin
  *
@@ -23,33 +24,33 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$services = array (
-    'tool_messenger_fetchlazydata' => array (
-        'functions' => array('tool_messenger_predict_users', 'tool_messenger_get_message'),
+$services = [
+    'tool_messenger_fetchlazydata' => [
+        'functions' => ['tool_messenger_predict_users', 'tool_messenger_get_message'],
         'requirecapability' => 'moodle/site:config',
         'restricteduseres' => 0,
         'enabled' => 1,
         'downloadfiles' => 0,
-        'uploadfiles' => 0
-    )
-);
-$functions = array (
-    'tool_messenger_predict_users' => array (
+        'uploadfiles' => 0,
+    ],
+];
+$functions = [
+    'tool_messenger_predict_users' => [
         'classname' => 'tool_messenger_external',
         'methodname' => 'predict_users',
         'classpath' => 'admin/tool/messenger/externallib.php',
         'description' => 'predicts users that are being sent a message',
         'type' => 'read',
         'ajax' => 'true',
-        'capabilities' => 'moodle/site:config'
-    ),
-    'tool_messenger_get_message' => array (
+        'capabilities' => 'moodle/site:config',
+    ],
+    'tool_messenger_get_message' => [
         'classname' => 'tool_messenger_external',
         'methodname' => 'get_message',
         'classpath' => 'admin/tool/messenger/externallib.php',
         'description' => 'gets a message from a job',
         'type' => 'read',
         'ajax' => 'true',
-        'capabilities' => 'moodle/site:config'
-    )
-);
+        'capabilities' => 'moodle/site:config',
+    ],
+];

@@ -29,7 +29,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2021 Robin Tschudi | WWU Münster
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class tool_messenger_testcase extends advanced_testcase {
+class tool_messenger_test extends advanced_testcase {
 
 
     /**
@@ -45,13 +45,13 @@ class tool_messenger_testcase extends advanced_testcase {
         $course1 = $generator->create_course();
         $course2 = $generator->create_course();
 
-        $student1 = $generator->create_and_enrol($course1, 'student', array('username' => 'student1', 'lastaccess' => $timestamp));
-        $student2 = $generator->create_and_enrol($course2, 'student', array('username' => 'student2', 'lastaccess' => $timestamp));
-        $student3 = $generator->create_and_enrol($course1, 'student', array('username' => 'student3', 'lastaccess' => $timestamponeyearago));
+        $student1 = $generator->create_and_enrol($course1, 'student', ['username' => 'student1', 'lastaccess' => $timestamp]);
+        $student2 = $generator->create_and_enrol($course2, 'student', ['username' => 'student2', 'lastaccess' => $timestamp]);
+        $student3 = $generator->create_and_enrol($course1, 'student', ['username' => 'student3', 'lastaccess' => $timestamponeyearago]);
 
-        $teacher1 = $generator->create_and_enrol($course1, 'teacher', array('username' => 'teacher1', 'lastaccess' => $timestamp));
-        $teacher2 = $generator->create_and_enrol($course2, 'teacher', array('username' => 'teacher2', 'lastaccess' => $timestamp));
-        $teacher3 = $generator->create_and_enrol($course1, 'teacher', array('username' => 'teacher3', 'lastaccess' => $timestamponeyearago));
+        $teacher1 = $generator->create_and_enrol($course1, 'teacher', ['username' => 'teacher1', 'lastaccess' => $timestamp]);
+        $teacher2 = $generator->create_and_enrol($course2, 'teacher', ['username' => 'teacher2', 'lastaccess' => $timestamp]);
+        $teacher3 = $generator->create_and_enrol($course1, 'teacher', ['username' => 'teacher3', 'lastaccess' => $timestamponeyearago]);
     }
 
     /**
@@ -62,9 +62,9 @@ class tool_messenger_testcase extends advanced_testcase {
      */
     public function test_sending_mails() {
         $data = new \stdClass();
-        $data->recipients = array($this->get_roleid('teacher'));
+        $data->recipients = [$this->get_roleid('teacher')];
         $data->subject = 'subject';
-        $data->message = array('text' => 'message');
+        $data->message = ['text' => 'message'];
         $data->directsend = 0;
         $data->knockout_enable = 0;
         $data->priority = 1;
@@ -91,9 +91,9 @@ class tool_messenger_testcase extends advanced_testcase {
      */
     public function test_cronlimit() {
         $data = new \stdClass();
-        $data->recipients = array($this->get_roleid('teacher'));
+        $data->recipients = [$this->get_roleid('teacher')];
         $data->subject = 'subject';
-        $data->message = array('text' => 'message');
+        $data->message = ['text' => 'message'];
         $data->directsend = 0;
         $data->knockout_enable = 0;
         $data->priority = 1;
@@ -122,9 +122,9 @@ class tool_messenger_testcase extends advanced_testcase {
     public function test_knockoutdate() {
         $data = new \stdClass();
         $timestamplessthanoneyearago = time() - 31622600 + 1;
-        $data->recipients = array($this->get_roleid('teacher'));
+        $data->recipients = [$this->get_roleid('teacher')];
         $data->subject = 'subject';
-        $data->message = array('text' => 'message');
+        $data->message = ['text' => 'message'];
         $data->directsend = 0;
         $data->knockout_enable = 1;
         $data->knockout_date = $timestamplessthanoneyearago;
@@ -150,9 +150,9 @@ class tool_messenger_testcase extends advanced_testcase {
     public function test_instant_sending() {
         $data = new \stdClass();
         $timestamplessthanoneyearago = time() - 31622600 + 1;
-        $data->recipients = array($this->get_roleid('teacher'));
+        $data->recipients = [$this->get_roleid('teacher')];
         $data->subject = 'subject';
-        $data->message = array('text' => 'message');
+        $data->message = ['text' => 'message'];
         $data->directsend = 1;
         $data->knockout_enable = 1;
         $data->knockout_date = $timestamplessthanoneyearago;
@@ -177,9 +177,9 @@ class tool_messenger_testcase extends advanced_testcase {
      */
     public function test_followup() {
         $data = new \stdClass();
-        $data->recipients = array($this->get_roleid('teacher'));
+        $data->recipients = [$this->get_roleid('teacher')];
         $data->subject = 'subject';
-        $data->message = array('text' => 'message');
+        $data->message = ['text' => 'message'];
         $data->directsend = 0;
         $data->knockout_enable = 0;
         $data->priority = 1;
@@ -187,9 +187,9 @@ class tool_messenger_testcase extends advanced_testcase {
         $lib = new \tool_messenger\locallib();
         $parentid = $lib->register_new_job($data);
 
-        $data->recipients = array();
+        $data->recipients = [];
         $data->priority = 2;
-        $data->message = array('text' => 'followup');
+        $data->message = ['text' => 'followup'];
         $data->followup = $parentid->get('id');
         $lib->register_new_job($data);
 
@@ -231,9 +231,9 @@ class tool_messenger_testcase extends advanced_testcase {
      */
     public function test_abort() {
         $data = new \stdClass();
-        $data->recipients = array($this->get_roleid('teacher'));
+        $data->recipients = [$this->get_roleid('teacher')];
         $data->subject = 'subject';
-        $data->message = array('text' => 'message');
+        $data->message = ['text' => 'message'];
         $data->directsend = 0;
         $data->knockout_enable = 0;
         $data->priority = 1;
@@ -260,9 +260,9 @@ class tool_messenger_testcase extends advanced_testcase {
      */
     public function test_priority() {
         $data = new \stdClass();
-        $data->recipients = array($this->get_roleid('teacher'));
+        $data->recipients = [$this->get_roleid('teacher')];
         $data->subject = 'subject';
-        $data->message = array('text' => 'message');
+        $data->message = ['text' => 'message'];
         $data->directsend = 0;
         $data->knockout_enable = 0;
         $data->priority = 1;
@@ -270,7 +270,7 @@ class tool_messenger_testcase extends advanced_testcase {
         $lib = new \tool_messenger\locallib();
         $lib->register_new_job($data);
         $data->priority = 2;
-        $data->message = array('text' => 'prioritymessage');
+        $data->message = ['text' => 'prioritymessage'];
         $lib->register_new_job($data);
 
         $sink = $this->redirectEmails();
@@ -303,7 +303,7 @@ class tool_messenger_testcase extends advanced_testcase {
      */
     private function get_roleid($role) {
         global $DB;
-        return $DB->get_field('role', 'id', array('shortname' => $role));
+        return $DB->get_field('role', 'id', ['shortname' => $role]);
     }
 }
 

@@ -57,7 +57,7 @@ function xmldb_tool_messenger_upgrade ($oldversion) {
         $table->add_field('parentid', XMLDB_TYPE_INTEGER, '10', null, null, null);
 
         // Adding keys to table.
-        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
 
         // Conditionally launch create table.
         if (!$dbman->table_exists($table)) {

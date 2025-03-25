@@ -43,7 +43,7 @@ if (has_capability('moodle/site:config', context_system::instance())) {
         $followuprequest = false;
     }
 
-    $mform = new tool_messenger\send_message_form(null, array('customdata' => array('followuprequest' => $followuprequest)));
+    $mform = new tool_messenger\send_message_form(null, ['customdata' => ['followuprequest' => $followuprequest]]);
 
     if ($data = $mform->get_data()) {
         if (isset($data->abort) && $data->abort > 0) {
@@ -61,9 +61,9 @@ if (has_capability('moodle/site:config', context_system::instance())) {
     $PAGE->requires->js_call_amd('tool_messenger/options', 'init');
     if ($followuprequest) {
         $parent = new message_persistent($data->followup);
-        $PAGE->requires->js_call_amd('tool_messenger/followup', 'set_correct_parent_date', array($parent->get('knockoutdate')));
+        $PAGE->requires->js_call_amd('tool_messenger/followup', 'set_correct_parent_date', [$parent->get('knockoutdate')]);
     } else {
-        $PAGE->requires->js_call_amd('tool_messenger/followup', 'set_correct_parent_date', array(strtotime('-1 years', time())));
+        $PAGE->requires->js_call_amd('tool_messenger/followup', 'set_correct_parent_date', [strtotime('-1 years', time())]);
     }
     $mform->display();
     echo $OUTPUT->footer();

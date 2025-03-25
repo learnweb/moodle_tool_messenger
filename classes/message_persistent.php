@@ -13,6 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
  * Class for persistent messages for the tool_messenger plugin
  *
@@ -32,7 +33,7 @@ defined('MOODLE_INTERNAL') || die;
  * @copyright 2021 Robin Tschudi
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class message_persistent extends persistent{
+class message_persistent extends persistent {
     /** Define the constant name. */
     const TABLE = 'tool_messenger_messagejobs';
 
@@ -41,65 +42,65 @@ class message_persistent extends persistent{
      * @return array[]
      */
     protected static function define_properties() {
-        return array(
-            'message' => array (
+        return [
+            'message' => [
                 'type' => PARAM_RAW,
                 'required' => true,
-                'message' => new \lang_string('invalidmessage', 'tool_messenger')
-            ),
-            'subject' => array (
+                'message' => new \lang_string('invalidmessage', 'tool_messenger'),
+            ],
+            'subject' => [
                 'type' => PARAM_TEXT,
                 'required' => true,
-                'message' => new \lang_string('invalidsubject', 'tool_messenger')
-            ),
-            'progress' => array (
+                'message' => new \lang_string('invalidsubject', 'tool_messenger'),
+            ],
+            'progress' => [
                 'type' => PARAM_INT,
-                'message' => new \lang_string('invalidprogress', 'tool_messenger')
-            ),
-            'priority' => array(
+                'message' => new \lang_string('invalidprogress', 'tool_messenger'),
+            ],
+            'priority' => [
                 'type' => PARAM_INT,
-                'message' => new \lang_string('invalidpriority', 'tool_messenger')
-            ),
-            'finished' => array (
+                'message' => new \lang_string('invalidpriority', 'tool_messenger'),
+            ],
+            'finished' => [
                 'type' => PARAM_INT,
-                'message' => new \lang_string('invalidfinished', 'tool_messenger')
-            ),
-            'parentid' => array (
+                'message' => new \lang_string('invalidfinished', 'tool_messenger'),
+            ],
+            'parentid' => [
                 'type' => PARAM_INT,
                 'message' => new \lang_string('invalidparentid', 'tool_messenger'),
                 'null' => NULL_ALLOWED,
-                'default' => null
-            ),
-            'roleids' => array (
+                'default' => null,
+            ],
+            'roleids' => [
                 'type' => PARAM_TEXT,
-                'message' => new \lang_string('invalidroleids', 'tool_messenger')
-            ),
-            'knockoutdate' => array (
+                'message' => new \lang_string('invalidroleids', 'tool_messenger'),
+            ],
+            'knockoutdate' => [
                 'type' => PARAM_INT,
-                'message' => new \lang_string('invalidknockoutdate', 'tool_messenger')
-            ),
-            'instant' => array (
+                'message' => new \lang_string('invalidknockoutdate', 'tool_messenger'),
+            ],
+            'instant' => [
                 'type' => PARAM_INT,
-                'message' => new \lang_string('invalidinstant', 'tool_messenger')
-            ),
-            'senttonum' => array (
+                'message' => new \lang_string('invalidinstant', 'tool_messenger'),
+            ],
+            'senttonum' => [
                 'type' => PARAM_INT,
-                'message' => new \lang_string('invalidsenttonum', 'tool_messenger')
-            ),
-            'aborted' => array (
+                'message' => new \lang_string('invalidsenttonum', 'tool_messenger'),
+            ],
+            'aborted' => [
                 'type' => PARAM_INT,
-                'message' => new \lang_string('invalidaborted', 'tool_messenger')
-            ),
-            'totalnumofusers' => array (
+                'message' => new \lang_string('invalidaborted', 'tool_messenger'),
+            ],
+            'totalnumofusers' => [
                 'type' => PARAM_INT,
-                'message' => new \lang_string('invalidnumofusers', 'tool_messenger')
-            ),
-            'failamount' => array (
+                'message' => new \lang_string('invalidnumofusers', 'tool_messenger'),
+            ],
+            'failamount' => [
                 'type' => PARAM_INT,
                 'message' => new \lang_string('invalidfailamount', 'tool_messenger'),
-                'default' => 0
-            )
-        );
+                'default' => 0,
+            ],
+        ];
     }
 
 }

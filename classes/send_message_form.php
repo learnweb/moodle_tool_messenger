@@ -72,7 +72,7 @@ class send_message_form extends moodleform {
         $name = 'message';
         $title = get_string('message', 'tool_messenger');
         $mform->addElement('editor', $name, $title,
-            array('enable_filemanagement' => false, 'maxfiles' => 0, 'noclean' => true, 'trusttext' => true));
+            ['enable_filemanagement' => false, 'maxfiles' => 0, 'noclean' => true, 'trusttext' => true]);
         $mform->setType($name, PARAM_RAW);
 
         $name = 'recipients';
@@ -94,12 +94,12 @@ class send_message_form extends moodleform {
 
         $name = 'knockout_date';
         $title = get_string ('knockoutdate', 'tool_messenger');
-        $mform->addElement('date_selector', $name, $title, array(
+        $mform->addElement('date_selector', $name, $title, [
             'startyear' => 2010,
             'stopyear'  => 2030,
             'timezone'  => 99,
-            'optional'  => false
-        ));
+            'optional'  => false,
+        ]);
         if ($followuprequest) {
             $timestamp = (int) $parent->get('knockoutdate');
             $mform->setDefault($name, $timestamp);
@@ -129,12 +129,12 @@ class send_message_form extends moodleform {
         $mform->setType($name, PARAM_BOOL);
 
         // Add Button.
-        $buttonarray = array();
+        $buttonarray = [];
         if ($followuprequest) {
             $buttonarray[] =& $mform->createElement('submit', 'cancelmessagebutton', get_string('cancelfollowup', 'tool_messenger'));
         }
         $buttonarray[] =& $mform->createElement('submit', 'sendmessagebutton', get_string('sendmessagebutton', 'tool_messenger'));
-        $mform->addGroup($buttonarray, 'buttonar', '', array(' '), false);
+        $mform->addGroup($buttonarray, 'buttonar', '', [' '], false);
 
         $mform->addElement('html', '</div>');
     }
@@ -144,7 +144,7 @@ class send_message_form extends moodleform {
      * @return array
      * @throws \dml_exception
      */
-    private function get_roles () {
+    private function get_roles() {
         global $DB;
         return $DB->get_records_sql_menu('SELECT id, shortname FROM {role}');
     }
@@ -170,38 +170,38 @@ class send_message_form extends moodleform {
         $attributes['id'] = 'course_category_table';
         $output = html_writer::start_tag('table', $attributes);
 
-        $output .= html_writer::start_tag('thead', array());
-        $output .= html_writer::start_tag('tr', array());
+        $output .= html_writer::start_tag('thead', []);
+        $output .= html_writer::start_tag('tr', []);
 
-        $attributes = array();
+        $attributes = [];
         $attributes['class'] = 'header c0';
         $attributes['scope'] = 'col';
         $output .= html_writer::tag('th', get_string('id', 'tool_messenger'), $attributes);
-        $attributes = array();
+        $attributes = [];
         $attributes['class'] = 'header c1';
         $attributes['scope'] = 'col';
         $output .= html_writer::tag('th', get_string('timereceived', 'tool_messenger'), $attributes);
-        $attributes = array();
+        $attributes = [];
         $attributes['class'] = 'header c2';
         $attributes['scope'] = 'col';
         $output .= html_writer::tag('th', get_string('message', 'tool_messenger'), $attributes);
-        $attributes = array();
+        $attributes = [];
         $attributes['class'] = 'header c3';
         $attributes['scope'] = 'col';
         $output .= html_writer::tag('th', get_string('to', 'tool_messenger'), $attributes);
-        $attributes = array();
+        $attributes = [];
         $attributes['class'] = 'header c4';
         $attributes['scope'] = 'col';
         $output .= html_writer::tag('th', get_string('knockoutdatetable', 'tool_messenger'), $attributes);
-        $attributes = array();
+        $attributes = [];
         $attributes['class'] = 'header c5';
         $attributes['scope'] = 'col';
         $output .= html_writer::tag('th', get_string('progress', 'tool_messenger'), $attributes);
-        $attributes = array();
+        $attributes = [];
         $attributes['class'] = 'header c6';
         $attributes['scope'] = 'col';
         $output .= html_writer::tag('th', get_string('priority', 'tool_messenger'), $attributes);
-        $attributes = array();
+        $attributes = [];
         $attributes['class'] = 'header c7';
         $attributes['scope'] = 'col';
         $output .= html_writer::tag('th', get_string('options', 'tool_messenger'), $attributes);

@@ -24,8 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$tasks = array(
-    array(
+$tasks = [
+    [
         'classname' => '\tool_messenger\task\send_mails',
         'blocking' => 0,
         'minute' => '*',
@@ -33,9 +33,9 @@ $tasks = array(
         'day' => '*',
         'month' => '*',
         'dayofweek' => '*',
-        'disabled' => 0
-    ),
-    array(
+        'disabled' => 0,
+    ],
+    [
         'classname' => '\tool_messenger\task\cleanup_jobs',
         'blocking' => 0,
         'minute' => '7',
@@ -43,6 +43,6 @@ $tasks = array(
         'day' => '1',
         'month' => '*',
         'dayofweek' => '*',
-        'disabled' => 0
-    ),
-);
+        'disabled' => 0,
+    ],
+];

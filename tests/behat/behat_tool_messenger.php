@@ -13,6 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
  * Behat Test for tool messenger
  *
@@ -43,7 +44,7 @@ class behat_tool_messenger extends behat_base {
      * @param AfterStepScope $scope
      * @AfterStep
      */
-    public function take_screenshot_after_failed_step (Behat\Behat\Hook\Scope\AfterStepScope $scope) {
+    public function take_screenshot_after_failed_step(Behat\Behat\Hook\Scope\AfterStepScope $scope) {
         $logall = true;
         if (99 === $scope->getTestResult()->getResultCode() || $logall) {
             if (file_exists(self::ERRORSAVEPATH)) {
@@ -58,7 +59,7 @@ class behat_tool_messenger extends behat_base {
      * @param $table
      * @Then there should be a persistent with the following data:
      */
-    public function there_should_be_a_persistent_with_the_following_data ($table) {
+    public function there_should_be_a_persistent_with_the_following_data($table) {
         global $DB;
         $persistentid = $DB->get_field_sql("SELECT ID FROM {tool_messenger_messagejobs} ORDER BY ID DESC LIMIT 1");
         $persistent = new \tool_messenger\message_persistent($persistentid);

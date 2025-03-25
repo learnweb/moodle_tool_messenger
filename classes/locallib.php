@@ -13,6 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
  * Local functions for tool_messenger plugin
  *
@@ -42,7 +43,7 @@ class locallib {
      * @throws coding_exception
      * @throws invalid_persistent_exception|dml_exception
      */
-    public function register_new_job ($data) {
+    public function register_new_job($data) {
         if ((isset($data->recipients) and count($data->recipients) != 0) or isset($data->followup)) {
 
             $record = new \stdClass();
@@ -89,7 +90,7 @@ class locallib {
      * @param $jobid int the id of the job to cancel
      * @throws coding_exception
      */
-    public function abort_job ($jobid) {
+    public function abort_job($jobid) {
         $persistent = new \tool_messenger\message_persistent(intval($jobid));
         $persistent->set('finished', 1);
         $persistent->set('aborted', 1);

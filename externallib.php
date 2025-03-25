@@ -13,6 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
  * External lib for the tool messenger.
  *
@@ -43,11 +44,11 @@ class tool_messenger_external extends external_api {
      */
     public static function predict_users_parameters() {
         return new external_function_parameters(
-            array(
+            [
                     'parentid' => new external_value(PARAM_INT, 'parentid', VALUE_DEFAULT, -1),
                     'knockoutdate' => new external_value(PARAM_INT, 'parentid', VALUE_DEFAULT, -1),
                     'roles' => new external_value(PARAM_TEXT, 'parentid', VALUE_DEFAULT, "no_data"),
-                )
+                ]
         );
     }
 
@@ -89,9 +90,9 @@ class tool_messenger_external extends external_api {
      */
     public static function get_message_parameters() {
         return new external_function_parameters(
-            array(
+            [
                 'id' => new external_value(PARAM_INT, 'id', VALUE_REQUIRED),
-            )
+            ]
         );
     }
 
@@ -112,9 +113,9 @@ class tool_messenger_external extends external_api {
     public static function get_message($id) {
         global $DB;
 
-        $message = $DB->get_field(\tool_messenger\message_persistent::TABLE, 'message', array('id' => $id));
-        $subject = $DB->get_field(\tool_messenger\message_persistent::TABLE, 'subject', array('id' => $id));
+        $message = $DB->get_field(\tool_messenger\message_persistent::TABLE, 'message', ['id' => $id]);
+        $subject = $DB->get_field(\tool_messenger\message_persistent::TABLE, 'subject', ['id' => $id]);
 
-        return json_encode(array('message' => $message, 'subject' => $subject));
+        return json_encode(['message' => $message, 'subject' => $subject]);
     }
 }
